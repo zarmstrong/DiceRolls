@@ -1,0 +1,23 @@
+<form action="{{ S_CONFIRM_ACTION }}" method="post">
+	<h3>{{ MESSAGE_TITLE }}</h3>
+	<p>{{ MESSAGE_TEXT }}</p>
+
+	<fieldset>
+		<dl>
+			<dt><strong>{{ lang('DICE_ROLL_NOTATION_CURRENT') }}</strong></dt>
+			<dd>{{ ROLL_DATA['notation'] }}</dd>
+		</dl>
+		<hr class="dashed">
+		<dl>
+			<dt><strong>{{ lang('DICE_ROLL_NOTATION_NEW') ~ lang('COLON') }}</strong></dt>
+			<dd><input class="inputbox" name="notation" type="text" title="{{ lang('DICE_ROLL_NOTATION') }}" placeholder="{{ lang('DICE_ROLL_NOTATION_NEW') }}" value="{{ ROLL_DATA['notation'] }}" maxlength="255" /></dd>
+		</dl>
+	</fieldset>
+
+	<br>
+
+	<fieldset class="submit-buttons">
+		<input class="button" type="button" name="confirm" value="{{ lang('SUBMIT') }}" />&nbsp;
+		<input class="button button-secondary" type="button" name="cancel" value="{{ lang('CANCEL') }}" />
+	</fieldset>
+</form>

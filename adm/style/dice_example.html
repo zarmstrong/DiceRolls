@@ -1,0 +1,47 @@
+{% if not S_IS_AJAX %}
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_dice/css/dice_acp.css' %}
+{% endif %}
+
+<fieldset class="dice-setting">
+	<p>
+		{{ lang('ACP_DICE_SETTINGS_EXPLAIN') }}<br>
+		{{ lang('ACP_DICE_EXAMPLE_1') }}.
+	</p>
+	<p>
+		<strong>{{ lang('ACP_DICE_ROLL_NR', 1) ~ lang('COLON') }}</strong> <span class="dice-example"><strong class="error">2</strong>d6</span> + <span class="dice-example"><strong class="error">5</strong>d100</span> + <span class="dice-example"><strong class="error">1</strong>d6!!</span><br>
+		<em>{{ lang('ACP_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <span class="dice-example">{{ lang('ACP_DICE_DICE', 3) }}</span><br>
+		<em>{{ lang('ACP_DICE_QTY_PER_DICE') ~ lang('COLON') }}</em> <strong class="error">8</strong><br>
+		<em>{{ lang('ACP_DICE_QTY_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <strong class="error">2</strong> & <strong class="error">5</strong> & <strong class="error">1</strong>.
+	</p>
+	<p>
+		<strong>{{ lang('ACP_DICE_ROLL_NR', 2) ~ lang('COLON') }}</strong> 3d<strong class="error">20</strong> + <span class="dice-example">1dF</span> + <span class="dice-example">2dF.1</span> + <mark>1d100</mark> + <mark>4d%</mark><br>
+		<em>{{ lang('ACP_DICE_SIDES_PER_DICE') ~ lang('COLON') }}</em> <strong class="error">20</strong><br>
+		<em>{{ lang('ACP_DICE_FUDGE_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <span class="dice-example">{{ lang('ACP_DICE_DICE', 2) }}</span><br>
+		<em>{{ lang('ACP_DICE_PC_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <mark>{{ lang('ACP_DICE_DICE', 2) }}</mark>
+	</p>
+	<p>
+		<strong>{{ lang('ACP_DICE_ROLL_NR', 3) ~ lang('COLON')}}</strong> <span class="dice-example">3d6!>4</span> + <span class="dice-example">2d6<strong class="error">!!</strong></span> + <span class="dice-example">2d8<strong class="error">!!</strong><mark>p</mark></span> + <span class="dice-example">3d10!<mark>p</mark>>8</span><br>
+		<em>{{ lang('ACP_DICE_EXPLODING_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <span class="dice-example">{{ lang('ACP_DICE_DICE', 4) }}</span><br>
+		<em>{{ lang('ACP_DICE_PENETRATION_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <mark>{{ lang('ACP_DICE_DICE', 2) }}</mark><br>
+		<em>{{ lang('ACP_DICE_COMPOUND_DICE_PER_NOTATION') ~ lang('COLON') }}</em> <strong class="error">{{ lang('ACP_DICE_DICE', 2) }}</strong>
+	</p>
+	<div>
+		<h5>{{ lang('ACP_DICE_SUMMARY') ~ lang('COLON') }}</h5>
+		<ul class="fa-ul">
+			<li><i class="fa fa-angle-right fa-li"></i>{{ lang('ACP_DICE_EXAMPLE_2') ~ lang('COLON') }} <span class="dice-example">1d6</span> + <span class="dice-example">1d6</span></li>
+			<li><i class="fa fa-angle-right fa-li"></i>{{ lang('ACP_DICE_EXAMPLE_3') }} <strong class="error">3</strong>d6 + <strong class="error">2</strong>d6</li>
+			<li><i class="fa fa-angle-right fa-li"></i>{{ lang('ACP_DICE_EXAMPLE_4') }} <strong class="error">2</strong>d6</li>
+			<li><i class="fa fa-angle-right fa-li"></i>{{ lang('ACP_DICE_EXAMPLE_5') }} 2d<strong class="error">12</strong></li>
+		</ul>
+	</div>
+
+	<p>{{ lang('ACP_DICE_ENJOY') }}!</p>
+</fieldset>
+
+{% if not S_IS_AJAX %}
+{{ lang('RETURN_PAGE', '<a href="' ~ U_BACK ~ '">', '</a>') }}
+
+{% include 'overall_footer.html' %}
+{% endif %}

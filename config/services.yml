@@ -1,0 +1,33 @@
+imports:
+    - { resource: tables.yml }
+    - { resource: services_controllers.yml }
+    - { resource: services_functions.yml }
+    - { resource: services_listeners.yml }
+
+services:
+    phpbbstudio.dice.entity.roll:
+            class: \phpbbstudio\dice\entity\roll
+            shared: false # Must be false to work
+            arguments:
+                - '@config'
+                - '@dbal.conn'
+                - '@phpbbstudio.dice.functions.common'
+                - '@language'
+                - '@phpbbstudio.dice.functions.regex'
+                - '@phpbbstudio.dice.functions.utils'
+                - '%phpbbstudio.dice.tables.rolls%'
+
+    phpbbstudio.dice.operator.roll:
+        class: \phpbbstudio\dice\operator\roll
+        arguments:
+            - '@config_text'
+            - '@config'
+            - '@service_container'
+            - '@dbal.conn'
+            - '@filesystem'
+            - '@controller.helper'
+            - '@template'
+            - '@user'
+            - '%core.root_path%'
+            - '%phpbbstudio.dice.tables.rolls%'
+            - '@phpbbstudio.dice.functions.common'

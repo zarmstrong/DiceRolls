@@ -1,0 +1,26 @@
+<fieldset>
+	<legend>{{ lang('ACP_DICE_SETTINGS') }}</legend>
+
+	<dl>
+		<dt><label for="dice_f_enable_on">{{ lang('ACP_DICE_ENABLE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_DICE_ENABLE_DESC') }}</span></dt>
+		<dd>
+			<label><input type="radio" class="radio" name="dice_enabled" value="1" id="dice_f_enable_on"{% if S_DICE_ENABLED %} checked="checked"{% endif %} /> {{ lang('ENABLED') }}</label>
+			<label><input type="radio" class="radio" name="dice_enabled" value="0" id="dice_f_enable_off"{% if not S_DICE_ENABLED %} checked="checked"{% endif %} /> {{ lang('DISABLED') }}</label>
+		</dd>
+	</dl>
+
+	<dl>
+		<dt><label for="dice_f_skin">{{ lang('ACP_DICE_F_SKIN') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_DICE_F_SKIN_DESC') }}</span></dt>
+		<dd>
+			<select name="dice_f_skin" id="dice_f_skin">{{ DICE_F_SKIN }}</select>
+		</dd>
+	</dl>
+
+	<dl>
+		<dt><label for="dice_skin_override_on">{{ lang('ACP_DICE_SKIN_OVERRIDE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_DICE_SKIN_OVERRIDE_DESC') }}</span></dt>
+		<dd>
+			<label><input type="radio" class="radio" name="dice_skin_override" value="1" id="dice_skin_override_on"{% if S_DICE_SKIN_OVERRIDE %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+			<label><input type="radio" class="radio" name="dice_skin_override" value="0" id="dice_skin_override_off"{% if not S_DICE_SKIN_OVERRIDE %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+		</dd>
+	</dl>
+</fieldset>

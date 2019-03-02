@@ -1,0 +1,50 @@
+services:
+    phpbbstudio.dice.listener.acp:
+        class: \phpbbstudio\dice\event\acp_listener
+        arguments:
+            - '@dbal.conn'
+            - '@phpbbstudio.dice.functions.common'
+            - '@request'
+            - '%phpbbstudio.dice.tables.rolls%'
+        tags:
+            - { name: event.listener }
+
+    phpbbstudio.dice.listener.bbcode:
+        class: \phpbbstudio\dice\event\bbcode_listener
+        arguments:
+            - '@phpbbstudio.dice.functions.common'
+            - '@request'
+        tags:
+            - { name: event.listener }
+
+    phpbbstudio.dice.listener.display:
+        class: \phpbbstudio\dice\event\display_listener
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@phpbbstudio.dice.functions.common'
+            - '@phpbbstudio.dice.operator.roll'
+            - '@template'
+        tags:
+            - { name: event.listener }
+
+    phpbbstudio.dice.listener.posting:
+        class: \phpbbstudio\dice\event\posting_listener
+        arguments:
+            - '@phpbbstudio.dice.functions.common'
+            - '@controller.helper'
+            - '@phpbbstudio.dice.operator.roll'
+            - '@request'
+            - '@template'
+        tags:
+            - { name: event.listener }
+
+    phpbbstudio.dice.listener.setup:
+        class: \phpbbstudio\dice\event\setup_listener
+        arguments:
+            - '@auth'
+            - '@phpbbstudio.dice.functions.common'
+            - '@language'
+            - '@template'
+        tags:
+            - { name: event.listener }

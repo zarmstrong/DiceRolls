@@ -1,0 +1,30 @@
+services:
+    phpbbstudio.dice.controller.admin:
+        class: \phpbbstudio\dice\controller\admin_controller
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@phpbbstudio.dice.functions.common'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@user_loader'
+            - '%phpbbstudio.dice.tables.rolls%'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    phpbbstudio.dice.controller.main:
+        class: \phpbbstudio\dice\controller\main_controller
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@phpbbstudio.dice.functions.common'
+            - '@controller.helper'
+            - '@language'
+            - '@phpbbstudio.dice.operator.roll'
+            - '@phpbbstudio.dice.functions.regex'
+            - '@request'
+            - '@template'
+            - '@user'

@@ -1,0 +1,23 @@
+services:
+    phpbbstudio.dice.functions.common:
+        class: \phpbbstudio\dice\core\functions_common
+        arguments:
+            - '@auth'
+            - '@config'
+            - '@config_text'
+            - '@dbal.conn'
+            - '@filesystem'
+            - '@phpbbstudio.dice.functions.finder'
+            - '@language'
+            - '@path_helper'
+            - '@user'
+            - '%core.root_path%'
+
+    phpbbstudio.dice.functions.finder:
+        class: \phpbbstudio\dice\core\functions_finder
+
+    phpbbstudio.dice.functions.regex:
+        class: \phpbbstudio\dice\core\functions_regex
+
+    phpbbstudio.dice.functions.utils:
+        class: \phpbbstudio\dice\core\functions_utils

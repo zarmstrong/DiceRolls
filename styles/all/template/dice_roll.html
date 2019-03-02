@@ -1,0 +1,19 @@
+{# The dice roll template that is used as a replacement in a post for display #}
+<div>
+	<em>{{ OUTPUT }}</em>
+	<br>
+	<strong>{{ NOTATION }}{{ lang('COLON') }}</strong>&nbsp;
+	{% for dice in DISPLAY %}
+		{% if not loop.first %}{{ dice.OPERATOR }}{% endif %}
+		[
+		{% for roll in dice.ROLLS %}
+			<div class="dice-display{% if roll.TOOLTIP %} dice-tooltip{% if roll.TOOLTIP['S_HIGHEST'] %} dice-roll-highest{% elseif roll.TOOLTIP['S_LOWEST'] %} dice-roll-lowest{% endif %}{% endif %}"{% if roll.TOOLTIP %} data-tooltip="{{ roll.TOOLTIP|join(lang('COMMA_SEPARATOR')) }}{% if roll.COMPOUNDED_ROLLS %} | {{ roll.COMPOUNDED_ROLLS|join(lang('COMMA_SEPARATOR')) }}{% endif %}"{% endif %}>
+				{% if roll.IMAGE %}<img src="{{ roll.IMAGE }}" alt="{{ roll.ROLL }}" height="{{ DICE_IMG_HEIGHT }}" width="{{ DICE_IMG_WIDTH }}">{% else %}{{ roll.ROLL }}{% endif %}
+			</div>
+		{% endfor %}
+		]
+		{{ dice.ADDITIONS }}
+	{% endfor %}
+
+	 <strong>&#61;&nbsp;{{ TOTAL }}</strong>
+</div>

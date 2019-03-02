@@ -1,0 +1,409 @@
+/**
+ * phpBB Studio's Dice extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2019 phpBB Studio <https://www.phpbbstudio.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ */
+
+.row,
+.row * {
+	box-sizing: border-box;
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.col {
+	position: relative;
+	width: 100%;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+	flex: 0 0 25%;
+	max-width: 25%;
+}
+
+@media all and (max-width: 1224px) {
+	.col {
+		flex: 0 0 50%;
+		max-width: 50%;
+	}
+}
+
+.card {
+	font-size: .875rem;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+	border: 0;
+	margin-bottom: 30px;
+	margin-top: 30px;
+	border-radius: 6px;
+	color: #333;
+	background: #fff;
+	width: 100%;
+	box-shadow: 0 1px 4px 0 rgba(0,0,0,.14);
+}
+
+.card-header {
+	border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+	border-bottom: none;
+	background: transparent;
+	color: #fff;
+	z-index: 3!important;
+	margin: 0 15px;
+	padding: 0;
+	position: relative;
+}
+
+.card-header-icon {
+	text-align: right;
+}
+
+.card-body {
+	padding: .9375rem 20px;
+	position: relative;
+}
+
+.card-footer {
+	display: flex;
+	align-items: center;
+	background-color: transparent;
+	border: 0;
+	padding: 10px 0 0;
+	margin: 14px 15px 10px;
+	border-radius: 0;
+	justify-content: space-between;
+	border-top: 1px solid #eee;
+}
+
+.card-footer-closer {
+	margin-top: 0;
+}
+
+.card-footer .card-action {
+	flex: 0 100%;
+	text-align: center;
+}
+
+.card-icon {
+	border-radius: 3px;
+	padding: 15px;
+	margin-top: -20px;
+	margin-right: 15px;
+	float: left;
+	background: #999;
+}
+
+.card-icon i {
+	font-size: 36px;
+	line-height: 56px;
+	width: 56px;
+	height: 56px;
+	text-align: center;
+}
+
+.card-category {
+	padding-top: 10px;
+	margin: 0;
+	color: #999;
+	font-size: 14px;
+}
+
+.card-avatar img {
+	width: 26px;
+	height: auto;
+}
+
+h3.card-title {
+	line-height: 1.5em;
+	font-size: 1.5625rem;
+	font-weight: 300;
+	text-decoration: none;
+	color: #3c4858;
+	margin: 0;
+}
+
+h4.card-title {
+	line-height: 1.4em;
+	font-size: 1.125rem;
+	font-weight: 300;
+	text-decoration: none;
+	color: #fff;
+	margin: 0;
+}
+
+.stats {
+	display: inline-flex;
+	color: #999;
+	font-size: 12px;
+	line-height: 22px;
+}
+
+@media all and (max-width: 800px) {
+	.stats {
+		display: inline-block;
+	}
+}
+
+.card .stats i {
+	margin-right: 3px;
+	margin-left: 3px;
+	position: relative;
+	font-size: 16px;
+}
+
+.card small {
+	font-size: 80%;
+	font-weight: 400;
+}
+
+.card label {
+	font-size: inherit;
+}
+
+.card a {
+	color: inherit;
+}
+
+.card a.card-primary {
+	display: block;
+}
+
+.card a.card-secondary {
+	color: #999;
+}
+
+.card a:hover,
+.card a:hover .stats,
+.card label:hover,
+.card label:hover .stats {
+	text-decoration: none;
+	color: #333;
+}
+
+.card .card-header .card-title+.card-category {
+	color: hsla(0,0%,100%,.62);
+}
+
+.card .card-header:not(.card-header-icon) {
+	border-radius: 3px;
+	margin-top: -20px;
+	padding: 15px;
+}
+
+.dice-orange {
+	background: linear-gradient(60deg, #ffa726, #fb8c00);
+	box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(255,152,0,.4);
+}
+
+.dice-green {
+	background: linear-gradient(60deg,#66bb6a,#43a047);
+	box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(76,175,80,.4);
+}
+
+.dice-blue {
+	background: linear-gradient(60deg,#26c6da,#00acc1);
+	box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(0,188,212,.4);
+}
+
+.dice-red {
+	background: linear-gradient(60deg,#ef5350,#e53935);
+	box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(244,67,54,.4);
+}
+
+.dice-purple {
+	background: linear-gradient(60deg,#ab47bc,#8e24aa);
+	box-shadow: 0 4px 20px 0 rgba(0,0,0,.14), 0 7px 10px -5px rgba(156,39,176,.4);
+}
+
+.dice-button {
+	color: #fff;
+	border: 1px solid transparent;
+	padding: 2px 6px 3px;
+	border-radius: 3px;
+	font-size: .9rem;
+}
+
+.dice-button i + span {
+	margin-left: 5px;
+}
+
+a.dice-button-locations {
+	display: inline-block;
+	color: #fff;
+	padding: 5px 10px;
+}
+
+.dice-button-green {
+	background: linear-gradient(60deg,#66bb6a,#43a047);
+	border-color: #1b9a1b;
+}
+
+.dice-button-red {
+	background: linear-gradient(60deg,#ef5350,#e53935);
+	border-color: #d31141;
+}
+
+.dice-setting {
+	font-size: .9rem;
+}
+
+.dice-input i {
+	padding: 6px;
+	border: 1px solid #333;
+	border-right-color: #969696;
+	background: #efefef;
+	border-radius: 3px 0 0 3px;
+}
+
+@media all and (max-width: 707px) {
+	.dice-input i {
+		vertical-align: -1px;
+	}
+}
+
+.dice-input i:before {
+	vertical-align: -1px;
+}
+
+.dice-side-add input,
+.dice-input input {
+	padding: 5px;
+	background: #f9f9f9;
+	border-radius: 0 3px 3px 0;
+}
+
+.dice-side-add input {
+	border-radius: 3px 0 0 3px;
+}
+
+.dice-side-add button {
+	padding: 4px 10px 6px;
+	border-radius: 0 3px 3px 0;
+}
+
+.dice-side-add button i {
+	vertical-align: -1px;
+}
+
+.dice-check + label,
+.dice-yes + label,
+.dice-no + label {
+	padding: 0;
+	margin: 0;
+}
+
+.dice-check + label {
+	font-size: 1rem;
+	user-select: none;
+	line-height: initial;
+}
+
+.dice-check + label span,
+.dice-yes + label span,
+.dice-no + label span {
+	display: inline-block;
+	margin: 0;
+	padding: 5px 10px;
+	border-left: 1px solid #AFAEAA;
+	border-top: 1px solid #AFAEAA;
+	border-right: 1px solid #D5D5C8;
+	border-bottom: 1px solid #D5D5C8;
+	border-radius: 0 3px 3px 0;
+}
+
+.dice-check,
+.dice-yes,
+.dice-no {
+	display: none;
+}
+
+.dice-check + label i,
+.dice-yes + label i,
+.dice-no + label i {
+	vertical-align: 1px;
+}
+
+.dice-yes + label i:before,
+.dice-no + label i:before {
+	content: "\f096";
+}
+
+.dice-check:checked + label i,
+.dice-check:checked + label span,
+.dice-yes:checked + label i,
+.dice-yes:checked + label span {
+	background: linear-gradient(60deg,#66bb6a,#43a047);
+	border-color: #1b9a1b;
+	color: #fff;
+}
+
+.dice-check + label i,
+.dice-check + label span,
+.dice-no:checked + label i,
+.dice-no:checked + label span {
+	background: linear-gradient(60deg,#ef5350,#e53935);
+	border-color: #d31141;
+	color: #fff;
+}
+
+.dice-check:checked + label i:before,
+.dice-yes:checked + label i:before { content: "\f00c"; }
+
+.dice-check + label i:before,
+.dice-no:checked + label i:before { content: "\f00d"; }
+
+.dice-check + label span.dice-check-yes { display: none; }
+.dice-check + label span.dice-check-no { display: inline-block; }
+.dice-check:checked + label span.dice-check-yes { display: inline-block; }
+.dice-check:checked + label span.dice-check-no { display: none; }
+
+span.dice-example {
+	position: relative;
+	padding: 0 5px;
+	display: inline-block;
+	border-bottom: 1px solid red;
+}
+
+span.dice-example::before,
+span.dice-example::after {
+	position: absolute;
+	content: '';
+	bottom: 0;
+	width: 1px;
+	height: 50%;
+	background: red;
+}
+
+span.dice-example::before { left: 0;}
+span.dice-example::after { right: 0;}
+
+@media all and (max-height: 480px) {
+	.alert_text {
+		max-height: 200px;
+		overflow: auto;
+	}
+
+	.phpbb_alert {
+		height: 240px;
+	}
+}
+
+@media all and (min-height: 480px) {
+	.alert_text {
+		max-height: 340px;
+		overflow: auto;
+	}
+
+	.phpbb_alert {
+		height: 400px;
+	}
+}
+

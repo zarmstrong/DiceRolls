@@ -1,0 +1,6 @@
+{% if S_DICE_ENABLED and (S_ROLL_ADD or S_ROLL_DELETE or S_ROLL_EDIT) %}
+{# The Dice Rolls tab below the posting editor #}
+<li id="dice-panel-tab" class="tab">
+	<a href="#dice" data-subpanel="dice-panel" role="tab" aria-controls="dice-panel">{{ lang('DICE_ROLLS') }}</a>
+</li>
+{% endif %}

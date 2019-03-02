@@ -1,0 +1,102 @@
+{% if S_DICE_ENABLED and (S_ROLL_ADD or S_ROLL_DELETE or S_ROLL_EDIT) %}
+
+	{% if S_DICE_REVIEW %}
+		{% INCLUDECSS '@phpbbstudio_dice/dice_display.css' %}
+		{% INCLUDEJS '@phpbbstudio_dice/js/dice_display.js' %}
+	{% endif %}
+
+	{% INCLUDEJS '@phpbbstudio_dice/js/dice.js' %}
+	{% INCLUDECSS '@phpbbstudio_dice/dice.css' %}
+
+	<!--suppress HtmlFormInputWithoutLabel -->
+	<div class="panel bg3 panel-container" id="dice-panel">
+		<div class="inner">
+			<p>{{ lang('DICE_ROLLS_EXPLAIN') }}</p>
+
+			{% if S_ROLL_ADD %}
+				<fieldset class="fields2">
+					{# The dice roll indicator that indicated if a roll has been added - HIDDEN #}
+					<input class="hidden" id="dice_indicator" name="dice_indicator" type="checkbox"{% if S_DICE_INDICATOR %} checked="checked"{% endif %}>
+					<dl>
+						<dt><label for="dice_notation">{{ lang('DICE_ROLL_NOTATION') ~ lang('COLON') }}</label></dt>
+						<dd><input class="inputbox" id="dice_notation" name="dice_notation" title="{{ lang('DICE_ROLL_NOTATION') }}" maxlength="255" type="text" /></dd>
+					</dl>
+				</fieldset>
+
+				<fieldset class="submit-buttons">
+					<button class="button{% if S_DICE_LIMIT %} button-secondary{% endif %}" id="dice_roll" type="button" data-url="{{ U_DICE_ADD }}" data-icons="fa-cube fa-exclamation-triangle" data-text="{% if not S_DICE_LIMIT %}{{ lang('DICE_ROLL_LIMIT_REACHED') }}{% else %}{{ lang('DICE_ROLL_DICE') }}{% endif %}"{% if S_DICE_LIMIT %} disabled{% endif %}>
+						<i class="icon {% if S_DICE_LIMIT %}fa-exclamation-triangle{% else %}fa-cube{% endif %} fa-fw" aria-hidden="true"></i>
+						<span>{% if S_DICE_LIMIT %}{{ lang('DICE_ROLL_LIMIT_REACHED') }}{% else %}{{ lang('DICE_ROLL_DICE') }}{% endif %}</span>
+					</button>
+				</fieldset>
+			{% endif %}
+
+			<div class="panel{% if not dice_rolls|length %} hidden{% endif %} file-list-container">
+				<div class="inner">
+					<table class="table1 zebra-list fixed-width-table" id="dice_table">
+						<thead>
+							<tr>
+								<th class="dice-roll-id">{{ lang('DICE_ROLL_ID') }}</th>
+								<th class="dice-roll-notation">{{ lang('DICE_ROLL_NOTATION') }}</th>
+								<th class="dice-roll-time">{{ lang('DICE_ROLL_TIME') }}</th>
+								<th class="dice-roll-actions">{{ lang('DICE_ROLL_ACTIONS') }}</th>
+							</tr>
+						</thead>
+						<tbody class="responsive-skip-empty file-list" id="dice_tbody">
+							{# Dice roll table row template, copied and then deleted by dice.js #}
+							<tr id="dice_template">
+								<td class="dice-roll-id"></td>
+								<td class="dice-roll-notation"></td>
+								<td class="dice-roll-time"></td>
+								<td class="dice-roll-actions">
+									<button class="button-secondary" name="dice_insert" title="{{ lang('PLACE_INLINE') }}" type="button" data-roll-id="" data-roll-notation="">
+										<i class="icon fa-sign-in fa-fw icon-green" aria-hidden="true"></i>
+										<span class="sr-only">{{ lang('PLACE_INLINE') }}</span>
+									</button>
+									{% if S_ROLL_EDIT %}
+									<a class="button-secondary" href="{{ U_DICE_EDIT }}" title="{{ lang('DICE_ROLL_EDIT') }}" data-ajax="dice_edit">
+										<i class="icon fa-pencil fa-fw icon-orange" aria-hidden="true"></i>
+										<span class="sr-only">{{ lang('DICE_ROLL_EDIT') }}</span>
+									</a>
+									{% endif %}
+									{% if S_ROLL_DELETE %}
+									<a class="button-secondary" href="{{ U_DICE_DELETE }}" title="{{ lang('DICE_ROLL_DELETE') }}" data-ajax="dice_delete">
+										<i class="icon fa-trash fa-fw icon-red" aria-hidden="true"></i>
+										<span class="sr-only">{{ lang('DICE_ROLL_DELETE') }}</span>
+									</a>
+									{% endif %}
+								</td>
+							</tr>
+							{% for roll in dice_rolls %}
+								<tr>
+									<td class="dice-roll-id">{{ roll.ROLL_ID }}</td>
+									<td class="dice-roll-notation">{{ roll.ROLL_NOTATION }}</td>
+									<td class="dice-roll-time">{{ roll.ROLL_TIME }}</td>
+									<td class="dice-roll-actions">
+										<button class="button-secondary" name="dice_insert" title="{{ lang('PLACE_INLINE') }}" type="button" data-roll-id="{{ roll.ROLL_ID|e('js') }}" data-roll-notation="{{ roll.ROLL_NOTATION|e('js') }}">
+											<i class="icon fa-sign-in fa-fw icon-green" aria-hidden="true"></i>
+											<span class="sr-only">{{ lang('PLACE_INLINE') }}</span>
+										</button>
+										{% if S_ROLL_EDIT %}
+										<a class="button-secondary" href="{{ roll.U_EDIT }}" title="{{ lang('DICE_ROLL_EDIT') }}" data-ajax="dice_edit">
+											<i class="icon fa-pencil fa-fw icon-orange" aria-hidden="true"></i>
+											<span class="sr-only">{{ lang('DICE_ROLL_EDIT') }}</span>
+										</a>
+										{% endif %}
+										{% if S_ROLL_DELETE %}
+										<a class="button-secondary" href="{{ roll.U_DELETE }}" title="{{ lang('DICE_ROLL_DELETE') }}" data-ajax="dice_delete">
+											<i class="icon fa-trash fa-fw icon-red" aria-hidden="true"></i>
+											<span class="sr-only">{{ lang('DICE_ROLL_DELETE') }}</span>
+										</a>
+										{% endif %}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endif %}

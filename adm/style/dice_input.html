@@ -1,0 +1,12 @@
+{% macro input(title, unlimited, value, icon, type, min, max, class) %}
+	{% set attr = type == 'text' ? ' minlength="' ~ min ~ '"' ~ (max ? ' maxlength="' ~ max ~ '"' : '') : ' min="' ~ min ~ '"' ~ (max ? ' max="' ~ max ~ '"' : '') ~ ' step="1"' %}
+	<dl class="dice-setting">
+		<dt><label for="{{ title }}">{{ lang('ACP_' ~ title|upper) ~ lang('COLON') }}</label><br><span class="explain">{{ lang('ACP_' ~ title|upper ~ '_DESC') }}</span>{% if unlimited %}<br><span class="explain small">{{ lang('ACP_DICE_ZERO_UNLIMITED') }}</span>{% endif %}</dt>
+		{% spaceless %}
+			<dd class="dice-input">
+				<i class="fa fa-{{ icon }} fa-fw"></i>
+				<input{% if class %} class="{{ class }}"{% endif %} id="{{ title }}" name="{{ title }}" type="{{ type }}" value="{{ value }}"{{ attr }}>
+			</dd>
+		{% endspaceless %}
+	</dl>
+{% endmacro %}

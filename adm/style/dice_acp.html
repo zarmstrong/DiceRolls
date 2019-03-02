@@ -1,0 +1,274 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_dice/css/dice_acp.css' %}
+{% INCLUDEJS '@phpbbstudio_dice/js/dice_acp.js' %}
+
+{% from '@phpbbstudio_dice/dice_input.html' import input as input %}
+
+<div class="row">
+	<div class="col">
+		<div class="card">
+			<div class="card-header card-header-icon">
+				<div class="card-icon dice-orange responsive-hide"><i class="fa fa-paint-brush fa-fw"></i></div>
+				<p class="card-category">{{ lang('ACP_DICE_SKINS_INSTALLED') }}</p>
+				<h3 class="card-title"><span title="{{ lang('ACP_DICE_SKINS_INSTALLED') }}">{{ SKINS_INSTALLED }}</span><small>/<span title="{{ lang('ACP_DICE_SKINS_AVAILABLE') }}">{{ skins|length }}</span> {{ lang('ACP_DICE_SKINS_SHORT')|lower }}</small></h3>
+			</div>
+			<div class="card-footer">
+				<div class="card-action">
+					<span class="stats">
+						{% if SKINS_VALID %}
+							<i class="success icon fa-check-circle fa-fw" aria-hidden="true"></i> <span class="success">{{ lang('ACP_DICE_VALID_ALL') }}</span>
+						{% else %}
+							<i class="error icon fa-exclamation-triangle fa-fw" aria-hidden="true"></i> <strong class="error">{{ lang('ACP_DICE_VALID_NOT_ALL') }}</strong>
+						{% endif %}
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-header card-header-icon">
+				<div class="card-icon dice-green responsive-hide"><i class="fa fa-cube fa-fw"></i></div>
+				<p class="card-category">{{ lang('ACP_DICE_SIDES_AVAILABLE') }}</p>
+				<h3 class="card-title">{{ sides|length }} <small>{{ lang('ACP_DICE_SIDES_SHORT')|lower }}</small></h3>
+			</div>
+			<div class="card-footer">
+				<div class="card-action">
+					<span class="stats"><i class="icon fa-info-circle fa-fw" aria-hidden="true"></i> <span>{% if DICE_SIDES_ONLY %}{{ lang('ACP_DICE_SIDES_ONLY_STATS') }}{% elseif DICE_SIDES_PER_DICE %}{{ lang('ACP_DICE_SIDES_ONLY_UPTO', DICE_SIDES_PER_DICE) }}{% else %}{{ lang('ACP_DICE_SIDES_ONLY_UNLIMITED') }}{% endif %}</span></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-header card-header-icon">
+				<div class="card-icon dice-red responsive-hide"><i class="fa fa-cubes fa-fw"></i></div>
+				<p class="card-category">{{ lang('ACP_DICE_MAX_ROLLS') }}</p>
+				<h3 class="card-title">{{ DICE_MAX_ROLLS }} <small>{{ lang('ACP_DICE_ROLLS_SHORT') }}</small></h3>
+			</div>
+			<div class="card-footer">
+				<label class="card-action" for="dice_max_rolls"><span class="stats"><i class="icon fa-pencil fa-fw" aria-hidden="true"></i> <span>{{ lang('EDIT') }}</span></span></label>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+		<div class="card">
+			<div class="card-header card-header-icon">
+				<div class="card-icon dice-blue responsive-hide"><i class="fa fa-database fa-fw"></i></div>
+				<p class="card-category">{{ lang('ACP_DICE_ROLLS_DB') }}</p>
+				<h3 class="card-title">{{ ROLLS_TOTAL }} <small>{{ lang('ACP_DICE_ROLLS_SHORT') }}</small></h3>
+			</div>
+			<div class="card-footer">
+				<a class="card-action" href="{{ U_ORPHANED }}" title="{{ lang('ACP_DICE_ORPHANED') }}" data-ajax="true">
+					<span class="stats"><i class="fa fa-times fa-fw" aria-hidden="true"></i> <span>{{ lang('ACP_DICE_ORPHANED') }} (<strong class="error dice-inline">{{ ROLLS_ORPHAN }}</strong>)</span></span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="clearfix">
+	<div class="column1">
+		<div class="card">
+			<div class="card-header card-header-icon">
+				<div class="card-icon dice-purple"><i class="fa fa-user fa-fw"></i></div>
+				<p class="card-category">{{ lang('ACP_DICE_TOP_USERS_DESC') }}</p>
+				<h3 class="card-title">{{ lang('ACP_DICE_TOP_USERS') }}</h3>
+			</div>
+			<div class="card-body">
+				{% if users|length %}
+					{% for users_batch in users|batch(4) %}
+						<div class="row{% if loop.index > 1 %} responsive-hide{% endif %}">
+							{% for user in users_batch %}
+								<div class="col centered-text">
+									<div class="card">
+										<div class="card-body">
+											<div class="card-avatar">
+												{% if user.AVATAR %}{{ user.AVATAR }}{% else %}<i class="fa fa-user-circle-o fa-2x"></i>{% endif %}
+											</div>
+											{{ user.NAME }}
+										</div>
+										<div class="card-footer card-footer-closer">
+											<div class="card-action">
+												{{ user.TOTAL }}
+											</div>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="centered-text"><strong class="error">{{ lang('ACP_DICE_ROLLS_NONE') }}</strong></div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="column2">
+		<div class="card">
+			<div class="card-header card-header-icon">
+				<div class="card-icon dice-orange"><i class="fa fa-file fa-fw"></i></div>
+				<p class="card-category">{{ lang('ACP_DICE_TOP_TOPICS_DESC') }}</p>
+				<h3 class="card-title">{{ lang('ACP_DICE_TOP_TOPICS') }}</h3>
+			</div>
+			<div class="card-body">
+				{% if topics|length %}
+					{% for topics_batch in topics|batch(4) %}
+						<div class="row{% if loop.index > 1 %} responsive-hide{% endif %}">
+							{% for topic in topics_batch %}
+								<div class="col centered-text">
+									<div class="card">
+										<div class="card-body">
+											<a class="card-primary" href="{{ topic.U_TOPIC }}" title="{{ lang('VIEW_TOPIC') }}">{{ topic.TOPIC_TITLE }}</a>
+											<a class="card-secondary" href="{{ topic.U_FORUM }}" title="{{ lang('GOTO_PAGE') }}">{{ topic.FORUM_NAME }}</a>
+										</div>
+										<div class="card-footer card-footer-closer">
+											<div class="card-action">
+												{{ topic.TOTAL }}
+											</div>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				{% else %}
+					<div class="centered-text"><strong class="error">{{ lang('ACP_DICE_ROLLS_NONE') }}</strong></div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="clearfix">
+	<div class="column1">
+		<div class="card">
+			<div class="card-header dice-red">
+				<h4 class="card-title">{{ lang('ACP_DICE_SKINS') }}</h4>
+				<p class="card-category">{{ lang('ACP_DICE_SKINS_EXPLAIN') }}</p>
+			</div>
+			<div class="card-body">
+				{% if SKINS_DIR_ERROR %}
+					<div class="errorbox">
+						<h3>{{ lang('ERROR') }}</h3>
+						<p>{{ lang('DIRECTORY_DOES_NOT_EXIST', SKINS_DIR) }}</p>
+					</div>
+				{% else %}
+					<table class="responsive">
+						{% for skin in skins %}
+							<tr>
+								<td class="name">{{ skin.NAME }}</td>
+								<td class="actions {% if skin.S_VALID %}yes{% else %}never{% endif %}">{% if skin.S_VALID %}{{ lang('ACP_DICE_VALID') }}{% else %}{{ lang('ACP_DICE_INVALID') }}{% endif %}</td>
+								<td class="actions {% if skin.S_INSTALLED %}yes{% else %}never{% endif %}">{% if skin.S_INSTALLED %}{{ lang('ACP_DICE_INSTALLED') }}{% else %}{{ lang('ACP_DICE_INSTALLED_NOT') }}{% endif %}</td>
+								<td class="actions col1">
+									{% if skin.S_INSTALLED %}
+										<a href="{{ skin.U_ACTION }}" title="{{ lang('ACP_DICE_SKIN_UNINSTALL') }}" data-ajax="dice_refresh"><i class="error fa fa-times-circle fa-2x"></i></a>
+									{% else %}
+										<a href="{{ skin.U_ACTION }}" title="{{ lang('ACP_DICE_SKIN_INSTALL') }}" data-ajax="dice_refresh"><i class="success fa fa-cog fa-2x"></i></a>
+									{% endif %}
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td class="centered-text error"><strong>{{ lang('ACP_DICE_SKINS_NONE') }}</strong></td>
+							</tr>
+						{% endfor %}
+					</table>
+				{% endif %}
+			</div>
+			<div class="card-footer">
+				<label class="card-action" for="dice_skins_dir"><span class="stats">{{ lang('ACP_DICE_INSTALLED_IN') ~ lang('COLON') }}</span> <strong>{{ SKINS_DIR }}</strong></label>
+			</div>
+		</div>
+	</div>
+	<div class="column2">
+		<div class="card">
+			<div class="card-header dice-blue">
+				<h4 class="card-title">{{ lang('ACP_DICE_SIDES') }}</h4>
+				<p class="card-category">{{ lang('ACP_DICE_SIDES_EXPLAIN') }}</p>
+			</div>
+			<div class="card-body">
+				<table class="responsive">
+					{% for row in sides|batch(2) %}
+						<tr>
+							{% for side in row %}
+								<td class="name col2">{{ side.NUMBER }}</td>
+								<td class="actions col1"><a href="{{ side.U_DELETE }}" title="{{ lang('ACP_DICE_SIDE_DELETE') }}" data-ajax="dice_refresh"><i class="error fa fa-times-circle fa-2x"></i></a></td>
+							{% endfor %}
+						</tr>
+					{% else %}
+						<tr>
+							<td class="centered-text error"><strong>{{ lang('ACP_DICE_SIDES_NONE') }}</strong></td>
+						</tr>
+					{% endfor %}
+				</table>
+
+			</div>
+			<div class="card-footer">
+				<div class="card-action">
+					{% spaceless %}
+						<form class="dice-setting dice-side-add" name="side_add" method="post" action="{{ U_SIDE_ADD }}" data-ajax="dice_refresh">
+							<label for="side_add">{{ lang('ACP_DICE_SIDE_ADD') }}{{ lang('COLON') }}</label>
+							<input id="side_add" name="value" type="number" min="2" step="1">
+							<button class="dice-button dice-button-green">
+								<i class="icon fa-plus fa-fw"></i>
+							</button>
+						</form>
+					{% endspaceless %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-header dice-green">
+		<h4 class="card-title">{{ lang('SETTINGS') }}</h4>
+		<p class="card-category">{{ lang('ACP_DICE_SETTINGS_EXPLAIN') }}<br><a href="{{ U_EXAMPLE }}" data-ajax="true">{{ lang('ACP_DICE_SETTINGS_EXAMPLE') }}</a></p>
+	</div>
+	<div class="card-body">
+		<form id="dice_settings" name="dice_settings" method="post" action="{{ U_ACTION }}">
+			{% if S_ERRORS %}
+				<div class="errorbox"><h3>{{ lang('ERROR') }}</h3><span>{{ ERROR_MSG }}</span></div>
+			{% endif %}
+			<fieldset>
+				<dl class="dice-setting">
+					<dt><strong>{{ lang('ACP_DICE_LOCATIONS') ~ lang('COLON') }}</strong><br><span class="explain">{{ lang('ACP_DICE_LOCATIONS_DESC') }}</span></dt>
+					<dd><a class="dice-button dice-button-green dice-button-locations" href="{{ U_LOCATIONS }}"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> <span>{{ lang('EDIT') }}</span></a></dd>
+				</dl>
+				<hr>
+				{{ input('dice_skins_dir', false, SKINS_DIR, 'folder-open-o', 'text', 0, 255, 'medium') }}
+				{{ input('dice_skins_img_width', false, SKINS_IMG_WIDTH, 'arrows-h', 'number', 16, 80) }}
+				{{ input('dice_skins_img_height', false, SKINS_IMG_HEIGHT, 'arrows-v', 'number', 16, 80) }}
+				<hr>
+				<dl class="dice-setting">
+					<dt><label for="dice_sides_only_y">{{ lang('ACP_DICE_SIDES_ONLY') ~ lang('COLON') }}</label><br><span class="explain">{{ lang('ACP_DICE_SIDES_ONLY_DESC') }}</span></dt>
+					<dd class="dice-input">
+						<input class="dice-yes" id="dice_sides_only_y" name="dice_sides_only" value="1" type="radio"{% if DICE_SIDES_ONLY %} checked{% endif %}><label for="dice_sides_only_y"><i class="fa fa-fw" aria-hidden="true"></i><span>{{ lang('YES') }}</span></label>
+						<input class="dice-no" id="dice_sides_only_n" name="dice_sides_only" value="0" type="radio"{% if not DICE_SIDES_ONLY %} checked{% endif %}><label for="dice_sides_only_n"><i class="fa fa-fw" aria-hidden="true"></i><span>{{ lang('NO') }}</span></label>
+					</dd>
+				</dl>
+				<hr>
+				{{ input('dice_max_rolls', true, DICE_MAX_ROLLS, 'file-text-o', 'number', 0) }}
+				{{ input('dice_per_notation', true, DICE_PER_NOTATION, 'cubes', 'number', 0) }}
+				{{ input('dice_qty_per_dice', true, DICE_QTY_PER_DICE, 'cube', 'number', 0) }}
+				{{ input('dice_qty_dice_per_notation', true, DICE_QTY_DICE_PER_NOTATION, 'cubes', 'number', 0) }}
+				{{ input('dice_sides_per_dice', true, DICE_SIDES_PER_DICE, 'cube', 'number', 0) }}
+				{{ input('dice_pc_dice_per_notation', true, DICE_PC_DICE_PER_NOTATION, 'percent', 'number', 0) }}
+				{{ input('dice_fudge_dice_per_notation', true, DICE_FUDGE_DICE_PER_NOTATION, 'sort', 'number', 0) }}
+				{{ input('dice_exploding_dice_per_notation', true, DICE_EXPLODING_DICE_PER_NOTATION, 'bomb', 'number', 0) }}
+				{{ input('dice_penetration_dice_per_notation', true, DICE_PENETRATION_DICE_PER_NOTATION, 'long-arrow-right', 'number', 0) }}
+				{{ input('dice_compound_dice_per_notation', true, DICE_COMPOUND_DICE_PER_NOTATION, 'exchange', 'number', 0) }}
+			</fieldset>
+
+			<fieldset class="submit-buttons">
+				{{ S_FORM_TOKEN }}
+				<button class="dice-button dice-button-green" type="submit" name="submit"><i class="icon fa-paper-plane fa-fw" aria-hidden="true"></i> <span>{{ lang('SUBMIT') }}</span></button>
+				<button class="dice-button dice-button-red" type="reset" name="reset"><i class="icon fa-refresh fa-fw" aria-hidden="true"></i> <span>{{ lang('RESET') }}</span></button>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+{% include 'overall_footer.html' %}

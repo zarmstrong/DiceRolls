@@ -1,0 +1,291 @@
+{% include 'overall_header.html' %}
+
+{% INCLUDECSS '@phpbbstudio_dice/dice_display.css' %}
+{% INCLUDECSS '@phpbbstudio_dice/dice_page.css' %}
+
+{% macro boolean(title, icon, status) %}
+<div>
+	<i class="icon fa-{{ icon }} fa-fw" aria-hidden="true"></i>
+	<div class="dice-result-boolean-{% if status %}true{% else %}false{% endif %}">
+		<i class="icon fa-fw" aria-hidden="true"></i>
+		<span class="sr-only">{% if status %}{{ lang('YES') }}{% else %}{{ lang('NO') }}{% endif %}</span>
+	</div>
+</div>
+{% endmacro %}
+
+{% from _self import boolean as bool %}
+
+<section class="dice-section">
+	<h2 class="dice-title">{{ lang('DICE_ROLL_PAGE_DICE_TESTER') }}</h2>
+
+	<form name="dice_tst" action="{{ U_DICE_ACTION }}" method="post">
+		<fieldset class="dice-fieldset panel bg3">
+			<select class="dice-skin" id="skin" name="skin" title="Dice skin">
+				{{ SKIN_OPTIONS }}
+			</select>
+			<input class="dice-input" id="notation" name="notation" placeholder="{{ lang('DICE_ROLL_NOTATION') }}" value="{{ NOTATION }}" type="text">
+		</fieldset>
+
+		<div class="dice-options">
+			<div class="dice-submit panel bg3">
+				<input class="button" id="submit" name="submit" type="submit" value="{{ lang('DICE_ROLL_DICE') }}">
+			</div>
+		</div>
+	</form>
+</section>
+
+{% if S_DICE_SUBMIT %}
+	<div class="dice-result panel bg1">
+		<h4 class="dice-title">{{ lang('DICE_ROLL_PAGE_RESULT') }}</h4>
+		<hr class="dashed">
+		{% include '@phpbbstudio_dice/dice_roll.html' %}
+	</div>
+{% endif %}
+
+<hr>
+
+<section class="dice-section dice-limit">
+	<h2 class="dice-title">{{ lang('DICE_ROLL_PAGE_LIMITATIONS') }}</h2>
+
+	<div class="rules clearfix">
+		<div class="column1">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_ROLLS_POST') }}</dt>
+				<dd>{% if LIMIT_DICE_ROLLS %}{{ LIMIT_DICE_ROLLS }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_DICE_QTY') }}</dt>
+				<dd>{% if LIMIT_DICE_QTY %}{{ LIMIT_DICE_QTY }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_SIDES_DICE') }}</dt>
+				<dd>{% if LIMIT_DICE_SIDES %}{{ LIMIT_DICE_SIDES }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_ALLOWED_SIDES') }}</dt>
+				<dd>{% if DICE_ALLOWED_ONLY %}{{ lang('DICE_ROLL_PAGE_ONLY_ALLOWED_SIDES') }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_AVAIL_SIDES') }}</dt>
+				<dd>{{ DICE_ALLOWED_SIDES|join(lang('COMMA_SEPARATOR')) }}</dd>
+			</dl>
+		</div>
+
+		<div class="column2">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_FUDGE_DICE') ~ lang('COLON') }}</dt>
+				<dd>{% if LIMIT_DICE_FUDGE %}{{ LIMIT_DICE_FUDGE }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_PERCENT_DICE') ~ lang('COLON') }}</dt>
+				<dd>{% if LIMIT_DICE_PC %}{{ LIMIT_DICE_PC }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EXPLODING_DICE') ~ lang('COLON') }}</dt>
+				<dd>{% if LIMIT_DICE_EXPLODE %}{{ LIMIT_DICE_EXPLODE }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_PENETRATING_DICE') ~ lang('COLON') }}</dt>
+				<dd>{% if LIMIT_DICE_PEN %}{{ LIMIT_DICE_PEN }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_COMPOUNDING_DICE') ~ lang('COLON') }}</dt>
+				<dd>{% if LIMIT_DICE_COMP %}{{ LIMIT_DICE_COMP }}{% else %}{{ lang('DICE_ROLL_PAGE_UNLIMITED') }}{% endif %}</dd>
+			</dl>
+		</div>
+	</div>
+
+</section>
+
+<hr>
+
+<section class="dice-section">
+	<h2 class="dice-title">{{ lang('DICE_ROLL_PAGE_P_1_TITLE') }}</h2>
+
+	<p>
+		{{ lang('DICE_ROLL_PAGE_P_1') }}
+	</p>
+
+	<dl class="dice-list details clearfix">
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_1') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_1_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_2') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_2_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_3') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_3_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_4') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_4_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_5') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_5_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_6') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_6_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_7') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_7_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_8') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_8_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_9') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_9_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_10') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_10_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_11') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_11_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_12') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_12_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_13') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_13_2') }}</dd>
+
+		<dt>{{ lang('DICE_ROLL_PAGE_LIST_14') }}</dt>
+		<dd>{{ lang('DICE_ROLL_PAGE_LIST_14_2') }}</dd>
+	</dl>
+
+	<div>
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_2_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_2') }}
+		</p>
+	</div>
+
+	<hr class="dice-hr">
+
+	<div>
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_3_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_3') }}
+		</p>
+		<div class="clearfix">
+			<div class="column1">
+				<div class="dice-options dice-example panel bg1">{{ lang('DICE_ROLL_PAGE_EXAMPLE_1_TITLE') }}</div>
+				<p>
+					{{ lang('DICE_ROLL_PAGE_EXAMPLE_1') }}
+				</p>
+			</div>
+			<div class="column2">
+				<div class="dice-options dice-example panel bg1">{{ lang('DICE_ROLL_PAGE_EXAMPLE_2_TITLE') }}</div>
+				{{ lang('DICE_ROLL_PAGE_EXAMPLE_2') }}
+			</div>
+		</div>
+		<hr class="dice-hr">
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_4_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_4') ~ lang('COLON') }}
+		</p>
+		<div class="dice-example panel bg1 clearfix">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_1') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_1_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_2') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_2_2') }}</dd>
+			</dl>
+		</div>
+
+		<hr class="dice-hr">
+
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_5_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_5') ~ lang('COLON') }}
+		</p>
+		<p class="dice-list">
+			{{ lang('DICE_ROLL_PAGE_P_6') }}
+		</p>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_7') ~ lang('COLON') }}
+		</p>
+		<div class="dice-options dice-example panel bg1">
+			{{ lang('DICE_ROLL_PAGE_EXAMPLE_3') }}
+		</div>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_8') }}
+		</p>
+
+		<hr class="dice-hr">
+
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_9_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_9') }}
+		</p>
+		<div class="clearfix">
+			<div class="column1">
+				<p class="dice-options"><em>{{ lang('DICE_ROLL_PAGE_EXAMPLE_4_TITLE') }}</em></p>
+				<div class="dice-options dice-example panel bg1">{{ lang('DICE_ROLL_PAGE_EXAMPLE_4') }}</div>
+			</div>
+			<div class="column2">
+				<p class="dice-options"><em>{{ lang('DICE_ROLL_PAGE_EXAMPLE_5_TITLE') }}</em></p>
+				<div class="dice-options dice-example panel bg1">{{ lang('DICE_ROLL_PAGE_EXAMPLE_5') }}</div>
+			</div>
+		</div>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_10') ~ lang('COLON') }}
+		</p>
+		<div class="dice-example panel bg1 clearfix">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_EXAMPLE_6') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EXAMPLE_6_TITLE') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EXAMPLE_7') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EXAMPLE_7_TITLE') }}</dd>
+			</dl>
+		</div>
+	</div>
+
+	<hr class="dice-hr">
+
+	<div>
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_11_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_11') ~ lang('COLON') }}
+		</p>
+		<div class="dice-example panel bg1 clearfix">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_EXAMPLE_8_TITLE') }}</dt> <dd>
+				<i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EXAMPLE_8') }} <span class="dice-example">{{ lang('DICE_ROLL_PAGE_EXAMPLE_8_BIS') }}</span></dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EXAMPLE_9_TITLE') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EXAMPLE_9') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EXAMPLE_10_TITLE') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EXAMPLE_10') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EXAMPLE_11_TITLE') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EXAMPLE_11') }}</dd>
+			</dl>
+		</div>
+	</div>
+
+	<hr class="dice-hr">
+
+	<div>
+		<h3 class="dice-type">{{ lang('DICE_ROLL_PAGE_P_12_TITLE') }}</h3>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_12') ~ lang('COLON') }}
+		</p>
+		<div class="dice-example panel bg1 clearfix">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_3') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_3_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_4') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_4_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_5') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_5_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_6') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_6_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_7') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_7_2') }}</dd>
+			</dl>
+		</div>
+		<p>
+			{{ lang('DICE_ROLL_PAGE_P_13') ~ lang('COLON') }}
+		</p>
+		<div class="dice-example panel bg1 clearfix">
+			<dl class="details">
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_8') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_8_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_9') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_9_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_10') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_10_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_11') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_11_2') }}</dd>
+
+				<dt>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_12') }}</dt> <dd><i class="icon fa-chevron-right fa-fw icon-blue" aria-hidden="true"></i>{{ lang('DICE_ROLL_PAGE_EX_DETAILS_12_2') }}</dd>
+			</dl>
+		</div>
+	</div>
+</section>
+
+{% include 'overall_footer.html' %}

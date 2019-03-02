@@ -1,0 +1,23 @@
+/**
+ * phpBB Studio's Dice extension for the phpBB Forum Software package.
+ *
+ * @copyright (c) 2019 phpBB Studio <https://www.phpbbstudio.com>
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ */
+
+.dice-roll-actions,
+.dice-roll-id {
+	width: 15%;
+}
+
+.dice-roll-notation,
+.dice-roll-time {
+	width: 30%;
+}
+
+.dice-roll-notation,
+.dice-roll-actions,
+.dice-roll-time,
+.dice-roll-id {
+	text-align: center;
+}

@@ -1,0 +1,2 @@
+parameters:
+    phpbbstudio.dice.tables.rolls: '%core.table_prefix%dice_rolls'

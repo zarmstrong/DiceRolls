@@ -1,0 +1,12 @@
+{% if postrow.DICE_ROLLS_OUTLINE|length %}
+<dl class="attachbox dice-box">
+	<dt>
+		<i class="icon fa-cube fa-fw" aria-hidden="true"></i>
+		{{ lang('DICE_ROLLS') }}
+	</dt>
+
+	{% for roll in postrow.DICE_ROLLS_OUTLINE %}
+	<dd>{{ roll }}</dd>
+	{% endfor %}
+</dl>
+{% endif %}

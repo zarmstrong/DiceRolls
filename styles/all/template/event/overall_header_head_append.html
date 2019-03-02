@@ -1,0 +1,10 @@
+{% if S_DICE_MCP_DISPLAY %}
+	{% if not definition.INCLUDED_DICEDISPLAYCSS %}
+		{% INCLUDECSS '@phpbbstudio_dice/dice_display.css' %}
+		{% DEFINE INCLUDED_DICEDISPLAYCSS = true %}
+	{% endif %}
+	{% if not definition.INCLUDED_DICEDISPLAYJS %}
+		{% INCLUDEJS '@phpbbstudio_dice/js/dice_display.js' %}
+		{% DEFINE INCLUDED_DICEDISPLAYJS = true %}
+	{% endif %}
+{% endif %}
