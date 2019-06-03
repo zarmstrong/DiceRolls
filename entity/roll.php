@@ -171,7 +171,7 @@ class roll implements roll_interface
 		// Update the roll data in the database
 		$sql = 'UPDATE ' . $this->table . '
 			SET ' . $this->db->sql_build_array('UPDATE', $sql_array) . '
-			WHERE roll_id = ' . $this->get_id();
+			WHERE roll_id = ' . (int) $this->get_id();
 		$this->db->sql_query($sql);
 
 		return $this;
