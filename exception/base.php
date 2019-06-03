@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\exception;
 
 /**
- * Base exception
+ * phpBB Studio's Dice Base exception
  */
 class base extends \Exception
 {
@@ -27,8 +27,8 @@ class base extends \Exception
 	 * Different from normal exceptions in that we do not enforce $message to be a string.
 	 *
 	 * @param  string|array		$message
-	 * @param  int 				$code
-	 * @param  \Exception 		$previous
+	 * @param  int				$code
+	 * @param  \Exception		$previous
 	 * @access public
 	 */
 	public function __construct($message = null, $code = 0, \Exception $previous = null)
@@ -42,9 +42,11 @@ class base extends \Exception
 			$this->message = (string) $message[0];
 		}
 
-		// We're slightly changing the way exceptions work
-		// Tools, such as xdebug, expect the message to be a string, so to prevent errors
-		// with those tools, we store our full message in message_full and only a string in message
+		/**
+		 * We're slightly changing the way exceptions work
+		 * Tools, such as xdebug, expect the message to be a string, so to prevent errors
+		 * with those tools, we store our full message in message_full and only a string in message
+		 */
 		$this->message_full = $message;
 
 		$this->code = $code;
@@ -54,7 +56,7 @@ class base extends \Exception
 	/**
 	 * Basic message translation for our exceptions.
 	 *
-	 * @param  \phpbb\language\language		$lang				Language object
+	 * @param  \phpbb\language\language		$lang	Language object
 	 * @return string
 	 * @access public
 	 */
@@ -65,7 +67,7 @@ class base extends \Exception
 
 		if (is_array($this->message_full))
 		{
-			return call_user_func_array(array($lang, 'lang'), $this->message_full);
+			return call_user_func_array([$lang, 'lang'], $this->message_full);
 		}
 
 		return $lang->lang($this->message_full);
@@ -77,11 +79,11 @@ class base extends \Exception
 	 * Goes through each element of the array and tries to translate them
 	 *
 	 * @param  \phpbb\language\language		$lang				Language object
-	 * @param  string|array 				$message_portions	The message portions to translate
-	 * @param  string|null 					$parent_message		Send a string to translate all of the
-	 *     														portions with the parent message (typically used to format a string
-	 *     														with the given message portions). Null to ignore. Default: Null
-	 * @return array|string 									Array if $parent_message === null else a string
+	 * @param  string|array					$message_portions	The message portions to translate
+	 * @param  string|null					$parent_message		Send a string to translate all of the
+	 *    														portions with the parent message (typically used to format a string
+	 *    														with the given message portions). Null to ignore. Default: Null
+	 * @return array|string										Array if $parent_message === null else a string
 	 * @access protected
 	 */
 	protected function translate_portions(\phpbb\language\language $lang, $message_portions, $parent_message = null)
@@ -92,7 +94,7 @@ class base extends \Exception
 		// Ensure we have an array
 		if (!is_array($message_portions))
 		{
-			$message_portions = array($message_portions);
+			$message_portions = [$message_portions];
 		}
 
 		// Translate each message portion
@@ -117,7 +119,7 @@ class base extends \Exception
 			array_unshift($message_portions, (string) $parent_message);
 
 			// We return a string
-			return call_user_func_array(array($lang, 'lang'), $message_portions);
+			return call_user_func_array([$lang, 'lang'], $message_portions);
 		}
 
 		// We return an array

@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class roll implements roll_interface
 {
-	/** @var \phpbb\config\db_text */
-	protected $config_text;
-
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \Symfony\Component\DependencyInjection\ContainerInterface */
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
+	/** @var ContainerInterface */
 	protected $container;
 
 	/** @var \phpbb\db\driver\driver_interface */
@@ -29,6 +29,9 @@ class roll implements roll_interface
 
 	/** @var \phpbb\filesystem\filesystem */
 	protected $filesystem;
+
+	/** @var \phpbbstudio\dice\core\functions_common */
+	protected $functions;
 
 	/** @var \phpbb\controller\helper */
 	protected $helper;
@@ -39,45 +42,60 @@ class roll implements roll_interface
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var string phpBB root path */
-	protected $root_path;
+	/** @var string Posts table */
+	protected $posts_table;
 
 	/** @var string Dice rolls table */
-	protected $table;
+	protected $rolls_table;
 
-	/** @var \phpbbstudio\dice\core\functions_common */
-	protected $functions;
+	/** @var string phpBB root path */
+	protected $root_path;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param  \phpbb\config\db_text										$config_text	Text configuration object
-	 * @param  \phpbb\config\config											$config			Configuration object
-	 * @param  \Symfony\Component\DependencyInjection\ContainerInterface	$container		Container injection Service
-	 * @param  \phpbb\db\driver\driver_interface							$db				Database object
-	 * @param  \phpbb\filesystem\filesystem									$filesystem		Filesystem object
-	 * @param  \phpbb\controller\helper										$helper			Controller helper object
-	 * @param  \phpbb\template\template										$template		Template object
-	 * @param  \phpbb\user													$user			User object
-	 * @param  string														$root_path		phpBB root path
-	 * @param  string														$table			Dice rolls table
-	 * @param  \phpbbstudio\dice\core\functions_common						$functions		Dice common functions
+	 * @param  \phpbb\config\config						$config			Configuration object
+	 * @param  \phpbb\config\db_text					$config_text	Text configuration object
+	 * @param  ContainerInterface						$container		Container injection Service
+	 * @param  \phpbb\db\driver\driver_interface		$db				Database object
+	 * @param  \phpbb\filesystem\filesystem				$filesystem		Filesystem object
+	 * @param  \phpbbstudio\dice\core\functions_common	$functions		Dice common functions
+	 * @param  \phpbb\controller\helper					$helper			Controller helper object
+	 * @param  \phpbb\template\template					$template		Template object
+	 * @param  \phpbb\user								$user			User object
+	 * @param  string									$posts_table	Posts table
+	 * @param  string									$rolls_table	Dice rolls table
+	 * @param  string									$root_path		phpBB root path
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\config\db_text $config_text, \phpbb\config\config $config, ContainerInterface $container, \phpbb\db\driver\driver_interface $db, \phpbb\filesystem\filesystem $filesystem, \phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\user $user, $root_path, $table, \phpbbstudio\dice\core\functions_common $functions)
+	public function __construct(
+		\phpbb\config\config $config,
+		\phpbb\config\db_text $config_text,
+		ContainerInterface $container,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\filesystem\filesystem $filesystem,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\controller\helper $helper,
+		\phpbb\template\template $template,
+		\phpbb\user $user,
+		$posts_table,
+		$rolls_table,
+		$root_path
+	)
 	{
-		$this->config_text	= $config_text;
 		$this->config		= $config;
+		$this->config_text	= $config_text;
 		$this->container	= $container;
 		$this->db			= $db;
 		$this->filesystem	= $filesystem;
+		$this->functions	= $functions;
 		$this->helper		= $helper;
 		$this->template		= $template;
 		$this->user			= $user;
+		$this->posts_table	= $posts_table;
+		$this->rolls_table	= $rolls_table;
 		$this->root_path	= $root_path;
-		$this->table		= $table;
-		$this->functions	= $functions;
 	}
 
 	/**
@@ -91,10 +109,10 @@ class roll implements roll_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_entities($rowset)
+	public function get_entities(array $rowset)
 	{
 		// Set up an array for entities collection.
-		$entities = array();
+		$entities = [];
 
 		foreach ($rowset as $row)
 		{
@@ -118,7 +136,7 @@ class roll implements roll_interface
 
 		$sql_where = is_array($roll_ids) ? $this->db->sql_in_set('roll_id', $roll_ids) : 'roll_id = ' . (int) $roll_ids;
 
-		$sql = 'DELETE FROM ' . $this->table . ' WHERE ' . $sql_where;
+		$sql = 'DELETE FROM ' . $this->rolls_table . ' WHERE ' . $sql_where;
 		$this->db->sql_query($sql);
 
 		return (bool) $this->db->sql_affectedrows();
@@ -130,8 +148,8 @@ class roll implements roll_interface
 	public function get_author($roll_id)
 	{
 		$sql = 'SELECT p.poster_id
-				FROM ' . $this->table . ' r
-				LEFT JOIN ' . POSTS_TABLE . ' p
+				FROM ' . $this->rolls_table . ' r
+				LEFT JOIN ' . $this->posts_table . ' p
 					ON p.post_id = r.post_id
 				WHERE r.roll_id = ' . (int) $roll_id;
 		$result = $this->db->sql_query_limit($sql, 1);
@@ -144,10 +162,10 @@ class roll implements roll_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_rolls_for_topic($forum_id, $topic_id, $post_list)
+	public function get_rolls_for_topic($forum_id, $topic_id, array $post_list)
 	{
 		$sql = 'SELECT *
-				FROM ' . $this->table . '
+				FROM ' . $this->rolls_table . '
 				WHERE forum_id = ' . (int) $forum_id . '
 					AND topic_id = ' . (int) $topic_id . '
 					AND ' . $this->db->sql_in_set('post_id', $post_list);
@@ -164,7 +182,7 @@ class roll implements roll_interface
 	public function get_rolls_for_posting($forum_id, $topic_id, $post_id)
 	{
 		$sql = 'SELECT *
-				FROM ' . $this->table . '
+				FROM ' . $this->rolls_table . '
 				WHERE forum_id = ' . (int) $forum_id . '
 					AND topic_id = ' . (int) $topic_id . '
 					AND post_id = ' . (int) $post_id;
@@ -186,7 +204,7 @@ class roll implements roll_interface
 
 		// If a topic was created, the rolls currently have no topic identifier
 		$sql = 'SELECT *
-				FROM ' . $this->table . '
+				FROM ' . $this->rolls_table . '
 				WHERE forum_id = ' . (int) $forum_id . '
 					AND user_id = ' . (int) $this->user->data['user_id'] . '
 					AND topic_id = ' . ($s_topic ? 0 : (int) $topic_id) . '
@@ -201,15 +219,6 @@ class roll implements roll_interface
 		/** @var \phpbbstudio\dice\entity\roll $entity */
 		foreach ($entities as $entity)
 		{
-			/**
-			 * @todo exception handling
-			 *       use a try {} catch() {} block.
-			 *
-			 *       Leave it for now as those exceptions can only be thrown by
-			 *       bad coding, not by user input. And we do not practise bad coding.
-			 *       (even though not handling an exception is a bad coding practise :-D)
-			 */
-
 			// If a topic was created, set the topic identifier
 			if ($s_topic)
 			{
@@ -225,26 +234,25 @@ class roll implements roll_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function assign_block_vars($entities, $block = 'dice_rolls')
+	public function assign_block_vars(array $entities, $block = 'dice_rolls')
 	{
 		/** @var \phpbbstudio\dice\entity\roll $entity */
 		foreach ($entities as $entity)
 		{
-			$this->template->assign_block_vars($block, array(
-				'FORUM_ID'      => $entity->get_forum(),
-				'TOPIC_ID'      => $entity->get_topic(),
-				'POST_ID'       => $entity->get_post(),
-				'USER_ID'       => $entity->get_user(),
-				'ROLL_ID'       => $entity->get_id(),
-				'ROLL_NOTATION' => $entity->get_notation(),
-				'ROLL_TIME'     => $this->user->format_date($entity->get_time()),
+			$this->template->assign_block_vars($block, [
+				'FORUM_ID'		=> $entity->get_forum(),
+				'TOPIC_ID'		=> $entity->get_topic(),
+				'POST_ID'		=> $entity->get_post(),
+				'USER_ID'		=> $entity->get_user(),
+				'ROLL_ID'		=> $entity->get_id(),
+				'ROLL_NOTATION'	=> $entity->get_notation(),
+				'ROLL_TIME'		=> $this->user->format_date($entity->get_time()),
 
-				'U_DELETE' 		=> $this->helper->route('phpbbstudio_dice_del', array('roll_id' => (int) $entity->get_id())),
-				'U_EDIT'		=> $this->helper->route('phpbbstudio_dice_edit', array('roll_id' => (int) $entity->get_id())),
-			));
+				'U_DELETE'		=> $this->helper->route('phpbbstudio_dice_del', ['roll_id' => (int) $entity->get_id()]),
+				'U_EDIT'		=> $this->helper->route('phpbbstudio_dice_edit', ['roll_id' => (int) $entity->get_id()]),
+			]);
 		}
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -252,46 +260,46 @@ class roll implements roll_interface
 	public function get_roll_data_for_edit($entity)
 	{
 		/** @var \phpbbstudio\dice\entity\roll $entity */
-		return array(
+		return [
 			'id'		=> $entity->get_id(),
 			'notation'	=> $entity->get_notation(),
 			'time'		=> $this->user->format_date($entity->get_time()),
-		);
+		];
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_roll_data_for_display($entity, $skin)
+	public function get_roll_data_for_display($entity, array $skin)
 	{
 		/** @var \phpbbstudio\dice\entity\roll $entity */
-		return array(
+		return [
 			'notation'	=> $entity->get_notation(),
 			'display'	=> $entity->get_display($skin['name'], $skin['dir'], $skin['ext']),
 			'output'	=> $entity->get_output(),
 			'total'		=> $entity->get_total(),
 			'post'		=> $entity->get_post(),
 			'inline'	=> false,
-		);
+		];
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function assign_roll_vars($roll)
+	public function assign_roll_vars(array $roll)
 	{
-		$this->template->set_filenames(array(
-			'dice'	=> '@phpbbstudio_dice/dice_roll.html'
-		));
+		$this->template->set_filenames([
+			'dice'	=> '@phpbbstudio_dice/dice_roll.html',
+		]);
 
-		$this->template->assign_vars(array(
+		$this->template->assign_vars([
 			'NOTATION'			=> $roll['notation'],
 			'DISPLAY'			=> $roll['display'],
 			'OUTPUT'			=> $roll['output'],
 			'TOTAL'				=> $roll['total'],
 			'DICE_IMG_HEIGHT'	=> (int) $this->config['dice_skins_img_height'],
 			'DICE_IMG_WIDTH'	=> (int) $this->config['dice_skins_img_width'],
-		));
+		]);
 
 		return $this->template->assign_display('dice');
 	}

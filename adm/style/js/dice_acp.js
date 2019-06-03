@@ -5,7 +5,7 @@
  * @license GNU General Public License, version 2 (GPL-2.0)
  */
 
-(function($) {  // Avoid conflicts with other libraries
+(function($) {
 
 'use strict';
 
@@ -28,4 +28,4 @@ phpbb.addAjaxCallback('dice_refresh', function() {
 	});
 });
 
-})(jQuery); // Avoid conflicts with other libraries
+})(jQuery);

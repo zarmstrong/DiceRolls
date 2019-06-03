@@ -11,32 +11,10 @@ namespace phpbbstudio\dice\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Display listener.
+ * phpBB Studio's Dice Display listener.
  */
 class display_listener implements EventSubscriberInterface
 {
-	/**
-	 * Assign functions defined in this class to event listeners in the core.
-	 *
-	 * @static
-	 * @return array
-	 * @access public
-	 */
-	static public function getSubscribedEvents()
-	{
-		return array(
-			'core.viewtopic_assign_template_vars_before'	=> 'set_dice_display',
-			'core.viewtopic_modify_post_data'				=> 'get_dice_rolls',
-			'core.viewtopic_modify_post_row'				=> 'display_dice_rolls',
-			'core.topic_review_modify_post_list'			=> 'get_review_dice_rolls',
-			'core.topic_review_modify_row'					=> 'display_review_dice_rolls',
-			'core.mcp_topic_modify_post_data'				=> 'get_mcp_dice_rolls',
-			'core.mcp_topic_review_modify_row'				=> 'display_mcp_dice_rolls',
-			'core.mcp_post_template_data'					=> 'display_mcp_post_dice_rolls',
-			'core.mcp_report_template_data'					=> 'display_mcp_report_dice_rolls',
-		);
-	}
-
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
@@ -63,13 +41,41 @@ class display_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbbstudio\dice\core\functions_common $functions, \phpbbstudio\dice\operator\roll $operator, \phpbb\template\template $template)
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbb\config\config $config,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbbstudio\dice\operator\roll $operator,
+		\phpbb\template\template $template
+	)
 	{
 		$this->auth			= $auth;
 		$this->config		= $config;
 		$this->functions	= $functions;
 		$this->operator		= $operator;
 		$this->template		= $template;
+	}
+
+	/**
+	 * Assign functions defined in this class to event listeners in the core.
+	 *
+	 * @static
+	 * @return array
+	 * @access public
+	 */
+	static public function getSubscribedEvents()
+	{
+		return [
+			'core.viewtopic_assign_template_vars_before'	=> 'set_dice_display',
+			'core.viewtopic_modify_post_data'				=> 'get_dice_rolls',
+			'core.viewtopic_modify_post_row'				=> 'display_dice_rolls',
+			'core.topic_review_modify_post_list'			=> 'get_review_dice_rolls',
+			'core.topic_review_modify_row'					=> 'display_review_dice_rolls',
+			'core.mcp_topic_modify_post_data'				=> 'get_mcp_dice_rolls',
+			'core.mcp_topic_review_modify_row'				=> 'display_mcp_dice_rolls',
+			'core.mcp_post_template_data'					=> 'display_mcp_post_dice_rolls',
+			'core.mcp_report_template_data'					=> 'display_mcp_report_dice_rolls',
+		];
 	}
 
 	/**
@@ -85,11 +91,11 @@ class display_listener implements EventSubscriberInterface
 		$forum_id	= (int) $event['forum_id'];		// Forum identifier
 		$topic_data = (array) $event['topic_data'];	// Array with topic data
 
-		$this->template->assign_vars(array(
+		$this->template->assign_vars([
 			'DICE_IMG_HEIGHT'	=> (int) $this->config['dice_skins_img_height'],
 			'DICE_IMG_WIDTH'	=> (int) $this->config['dice_skins_img_width'],
 			'S_DICE_DISPLAY'	=> (bool) ($topic_data['dice_enabled'] && $this->auth->acl_get('f_dice_view', $forum_id)),
-		));
+		]);
 	}
 
 	/**
@@ -145,15 +151,15 @@ class display_listener implements EventSubscriberInterface
 	public function display_dice_rolls($event)
 	{
 		// Grab the event data
-		$row 		= (array) $event['row'];		// Array with original post and user data
+		$row		= (array) $event['row'];		// Array with original post and user data
 		$post_row	= (array) $event['post_row'];	// Template block array of the post
 		$topic_data = (array) $event['topic_data'];
 
 		// Grab the post message and the rolls data
 		$message	= $post_row['MESSAGE'];
-		$rolls		= isset($topic_data['dice_rolls']) ? $topic_data['dice_rolls'] : array();
+		$rolls		= isset($topic_data['dice_rolls']) ? $topic_data['dice_rolls'] : [];
 
-		if ($topic_data['dice_enabled'] && $this->auth->acl_get('f_dice_view', $row['forum_id']) && $rolls)
+		if ($topic_data['dice_enabled'] && $this->auth->acl_get('f_dice_view', $row['forum_id']))
 		{
 			$message = $this->replace_rolls($message, $rolls, $topic_data['dice_skin'], $row, false);
 
@@ -236,9 +242,9 @@ class display_listener implements EventSubscriberInterface
 		$row = (array) $event['row'];
 
 		$message = $post_row['MESSAGE'];
-		$rolls = isset($row['dice_rolls']) ? $row['dice_rolls'] : array();
+		$rolls = isset($row['dice_rolls']) ? $row['dice_rolls'] : [];
 
-		$skin_data = isset($row['dice_skin']) ? $row['dice_skin'] : array();
+		$skin_data = isset($row['dice_skin']) ? $row['dice_skin'] : [];
 
 		if ($this->auth->acl_get('f_dice_view', $forum_id) && $rolls)
 		{
@@ -294,7 +300,7 @@ class display_listener implements EventSubscriberInterface
 			return;
 		}
 
-		$rolls = array();
+		$rolls = [];
 
 		// Get entities for the post list
 		$entities = $this->operator->get_rolls_for_topic($forum_id, $topic_id, $post_list);
@@ -337,10 +343,10 @@ class display_listener implements EventSubscriberInterface
 	public function display_mcp_dice_rolls($event)
 	{
 		// Grab event data
-		$forum_id = (int) $event['forum_id'];
-		$topic_info = (array) $event['topic_info'];
-		$post_row = (array) $event['post_row'];
-		$row = (array) $event['row'];
+		$forum_id	= (int) $event['forum_id'];
+		$topic_info	= (array) $event['topic_info'];
+		$post_row	= (array) $event['post_row'];
+		$row		= (array) $event['row'];
 
 		// Forum id might not be directly available from the &f= parameter, so otherwise grab it from the first post data.
 		$forum_id = empty($forum_id) ? (int) $row['forum_id'] : $forum_id;
@@ -348,8 +354,8 @@ class display_listener implements EventSubscriberInterface
 		$message = $post_row['MESSAGE'];
 
 		// Get the dice rolls and merge them with all previously queried from this topic
-		$topic_rolls = isset($topic_info['dice_rolls']) ? $topic_info['dice_rolls'] : array();
-		$post_rolls = isset($row['dice_rolls']) ? $row['dice_rolls'] : array();
+		$topic_rolls = isset($topic_info['dice_rolls']) ? $topic_info['dice_rolls'] : [];
+		$post_rolls = isset($row['dice_rolls']) ? $row['dice_rolls'] : [];
 		$rolls = $topic_rolls + $post_rolls;
 
 		// Get the dice skin data: stored in topic data? stored in row data? query.
@@ -445,11 +451,11 @@ class display_listener implements EventSubscriberInterface
 	 * @return string					The rendered message with the dice rolls replacement
 	 * @access protected
 	 */
-	protected function replace_mcp_rolls($message, $post_info)
+	protected function replace_mcp_rolls($message, array $post_info)
 	{
-		$forum_id = (int) $post_info['forum_id'];
-		$topic_id = (int) $post_info['topic_id'];
-		$post_id = (int) $post_info['post_id'];
+		$forum_id	= (int) $post_info['forum_id'];
+		$topic_id	= (int) $post_info['topic_id'];
+		$post_id	= (int) $post_info['post_id'];
 
 		$forum_data = $this->functions->forum_data((int) $forum_id);
 
@@ -459,13 +465,13 @@ class display_listener implements EventSubscriberInterface
 			return $message;
 		}
 
-		$rolls = array();
+		$rolls = [];
 
 		// Get the dice skin
 		$skin_data = $this->functions->get_dice_skin_data($forum_data['dice_skin_override'], $forum_data['dice_f_skin']);
 
 		// Get entities for the post list
-		$entities = $this->operator->get_rolls_for_topic($forum_id, $topic_id, array($post_id));
+		$entities = $this->operator->get_rolls_for_topic($forum_id, $topic_id, [$post_id]);
 
 		/** @var \phpbbstudio\dice\entity\roll $entity */
 		foreach ($entities as $entity)
@@ -489,11 +495,11 @@ class display_listener implements EventSubscriberInterface
 
 			$outline = $this->display_dice_rolls_not_inline($rolls, $post_id);
 
-			$this->template->assign_vars(array(
+			$this->template->assign_vars([
 				'DICE_ROLLS_OUTLINE'	=> $outline,
 
 				'S_DICE_MCP_DISPLAY'	=> true,
-			));
+			]);
 		}
 
 		return $message;
@@ -511,7 +517,7 @@ class display_listener implements EventSubscriberInterface
 	 * @return string
 	 * @access protected
 	 */
-	protected function replace_rolls($message, &$rolls, $skin, $row, $quote = false, $bbcode = false)
+	protected function replace_rolls($message, array &$rolls, array $skin, array $row, $quote = false, $bbcode = false)
 	{
 		$regex = $bbcode ? '/\[roll=([0-9]+)\].+?\[\/roll\]/s' : '/<span class="phpbbstudio-dice" data-dice-id="([0-9]+)">.+?<\/span>/s';
 
@@ -521,7 +527,7 @@ class display_listener implements EventSubscriberInterface
 			{
 				// Capture group 1 is the roll identifier
 				$roll_id = (int) $match[1];
-				$roll = isset($rolls[$roll_id]) ? $rolls[$roll_id] : array();
+				$roll = isset($rolls[$roll_id]) ? $rolls[$roll_id] : [];
 
 				// If the roll exists
 				if ($roll)
@@ -543,7 +549,7 @@ class display_listener implements EventSubscriberInterface
 				else if ($quote)
 				{
 					// Lets check if we tried querying this roll before and could not find it.
-					$not_found = isset($rolls['not_found']) ? $rolls['not_found'] : array();
+					$not_found = isset($rolls['not_found']) ? $rolls['not_found'] : [];
 					if (in_array($roll_id, $not_found))
 					{
 						return $match[0];
@@ -588,13 +594,13 @@ class display_listener implements EventSubscriberInterface
 	 * @return array						Array of the not in-line displayed dice rolls
 	 * @access protected
 	 */
-	protected function display_dice_rolls_not_inline($rolls, $post_id)
+	protected function display_dice_rolls_not_inline(array $rolls, $post_id)
 	{
 		// Enforce data type
 		$post_id = (int) $post_id;
 
 		// Set up collection array
-		$outline = array();
+		$outline = [];
 
 		// Make sure we are not iterating over not found rolls
 		unset($rolls['not_found']);

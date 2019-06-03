@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\migrations;
 
 /**
- * Install ACP module.
+ * phpBB Studio's Dice Migration: Install ACP module.
  */
 class install_acp_module extends \phpbb\db\migration\migration
 {
@@ -22,7 +22,7 @@ class install_acp_module extends \phpbb\db\migration\migration
 	 */
 	static public function depends_on()
 	{
-		return array('\phpbb\db\migration\data\v32x\v325');
+		return ['\phpbb\db\migration\data\v32x\v325'];
 	}
 
 	/**
@@ -33,20 +33,20 @@ class install_acp_module extends \phpbb\db\migration\migration
 	 */
 	public function update_data()
 	{
-		return array(
-			array('module.add', array(
+		return [
+			['module.add', [
 				'acp',
 				'ACP_CAT_DOT_MODS',
-				'ACP_DICE_CAT'
-			)),
-			array('module.add', array(
+				'ACP_DICE_CAT',
+			]],
+			['module.add', [
 				'acp',
 				'ACP_DICE_CAT',
-				array(
+				[
 					'module_basename'	=> '\phpbbstudio\dice\acp\dice_module',
-					'modes'				=> array('dashboard'),
-				),
-			)),
-		);
+					'modes'				=> ['dashboard'],
+				],
+			]],
+		];
 	}
 }

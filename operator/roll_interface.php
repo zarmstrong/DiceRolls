@@ -30,7 +30,7 @@ interface roll_interface
 	 * @return array				Array of roll entities
 	 * @access public
 	 */
-	public function get_entities($rowset);
+	public function get_entities(array $rowset);
 
 	/**
 	 * Delete roll entity|entities.
@@ -59,7 +59,7 @@ interface roll_interface
 	 * @return array				Array of roll entities
 	 * @access public
 	 */
-	public function get_rolls_for_topic($forum_id, $topic_id, $post_list);
+	public function get_rolls_for_topic($forum_id, $topic_id, array $post_list);
 
 	/**
 	 * Get roll entities for posting, depending on the identifiers.
@@ -93,7 +93,7 @@ interface roll_interface
 	 * @return void
 	 * @access public
 	 */
-	public function assign_block_vars($entities, $block = 'dice_rolls');
+	public function assign_block_vars(array $entities, $block = 'dice_rolls');
 
 	/**
 	 * Get roll data used for editing.
@@ -107,12 +107,12 @@ interface roll_interface
 	/**
 	 * Get roll data used for display.
 	 *
-	 * @param  \phpbbstudio\dice\entity\roll 	$entity		The roll entity
+	 * @param  \phpbbstudio\dice\entity\roll	$entity		The roll entity
 	 * @param  array							$skin		Dice skin data
 	 * @return array										Array with the roll data
 	 * @access public
 	 */
-	public function get_roll_data_for_display($entity, $skin);
+	public function get_roll_data_for_display($entity, array $skin);
 
 	/**
 	 * Assign roll variables to the template.
@@ -121,5 +121,5 @@ interface roll_interface
 	 * @return string										String of the compiled roll
 	 * @access public
 	 */
-	public function assign_roll_vars($roll);
+	public function assign_roll_vars(array $roll);
 }

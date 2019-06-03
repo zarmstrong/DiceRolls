@@ -17,22 +17,22 @@ class roll implements roll_interface
 	 * Data for this entity.
 	 *
 	 * @var array
-		* 	roll_id
-		* 	roll_notation
-	 	*	roll_dices
-	 	*	roll_rolls
-		* 	roll_output
-		*	roll_total
-		*	roll_successes
-	 	*	roll_is_pool
-	 	* 	roll_time
-	 	* 	roll_edit_user
-	 	* 	roll_edit_time
-	 	* 	roll_edit_count
-		* 	forum_id
-		* 	topic_id
-		* 	post_id
-		* 	user_id
+	 * 	roll_id
+	 * 	roll_notation
+	 *	roll_dices
+	 *	roll_rolls
+	 * 	roll_output
+	 *	roll_total
+	 *	roll_successes
+	 *	roll_is_pool
+	 * 	roll_time
+	 * 	roll_edit_user
+	 * 	roll_edit_time
+	 * 	roll_edit_count
+	 * 	forum_id
+	 * 	topic_id
+	 * 	post_id
+	 * 	user_id
 	 * @access protected
 	 */
 	protected $data;
@@ -71,7 +71,15 @@ class roll implements roll_interface
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbbstudio\dice\core\functions_common $functions, \phpbb\language\language $lang, \phpbbstudio\dice\core\functions_regex $regex, \phpbbstudio\dice\core\functions_utils $utils, $table)
+	public function __construct(
+		\phpbb\config\config $config,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\language\language $lang,
+		\phpbbstudio\dice\core\functions_regex $regex,
+		\phpbbstudio\dice\core\functions_utils $utils,
+		$table
+	)
 	{
 		$this->config		= $config;
 		$this->db			= $db;
@@ -88,8 +96,8 @@ class roll implements roll_interface
 	public function load($id)
 	{
 		$sql = 'SELECT *
-				FROM ' . $this->table . '
-				WHERE roll_id = ' . (int) $id;
+			FROM ' . $this->table . '
+			WHERE roll_id = ' . (int) $id;
 		$result = $this->db->sql_query($sql);
 		$this->data = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
@@ -97,7 +105,7 @@ class roll implements roll_interface
 		if ($this->data === false)
 		{
 			// The roll does not exist
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_ID', 'ROLL_NOT_EXIST'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_ID', 'ROLL_NOT_EXIST']);
 		}
 
 		return $this;
@@ -106,9 +114,9 @@ class roll implements roll_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function import($data)
+	public function import(array $data)
 	{
-		$this->data = array();
+		$this->data = [];
 
 		foreach ($data as $key => $value)
 		{
@@ -126,7 +134,7 @@ class roll implements roll_interface
 		if (!empty($this->data['roll_id']))
 		{
 			// The roll already exists
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_ID', 'ROLL_ALREADY_EXIST'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_ID', 'ROLL_ALREADY_EXIST']);
 		}
 
 		// Insert the roll data to the database
@@ -151,17 +159,19 @@ class roll implements roll_interface
 		if (empty($this->data['roll_id']))
 		{
 			// The roll does not exist
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_ID', 'ROLL_NOT_EXIST'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_ID', 'ROLL_NOT_EXIST']);
 		}
 
-		// Copy the data array, filtering out the roll_id identifier
-		// so we do not attempt to update the row's identity column.
-		$sql_array = array_diff_key($this->data, array('roll_num' => null, 'roll_id' => null));
+		/**
+		 * Copy the data array, filtering out the roll_id identifier
+		 * so we do not attempt to update the row's identity column.
+		 */
+		$sql_array = array_diff_key($this->data, ['roll_num' => null, 'roll_id' => null]);
 
 		// Update the roll data in the database
 		$sql = 'UPDATE ' . $this->table . '
-				SET ' . $this->db->sql_build_array('UPDATE', $sql_array) . '
-				WHERE roll_id = ' . $this->get_id();
+			SET ' . $this->db->sql_build_array('UPDATE', $sql_array) . '
+			WHERE roll_id = ' . $this->get_id();
 		$this->db->sql_query($sql);
 
 		return $this;
@@ -175,14 +185,14 @@ class roll implements roll_interface
 		// There are no dices to roll!
 		if (!$this->get_dices())
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICES', 'FIELD_MISSING'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICES', 'FIELD_MISSING']);
 		}
 
-		$notation_rolls = array();
+		$notation_rolls = [];
 
 		foreach ($this->get_dices() as $dice)
 		{
-			$rolls = $re_rolls = array();
+			$rolls = $re_rolls = [];
 
 			$sides = $dice['sides'];
 			$callback = 'default_dice';
@@ -195,6 +205,7 @@ class roll implements roll_interface
 			{
 				// we have a fudge dice - define the callback to return the `fudge` roll method
 				$callback = 'fudge_dice';
+
 				// set the `sides` to the correct value for the fudge type
 				$sides = (isset($dice['fudge'][1]) && $this->utils->is_numeric($dice['fudge'][1])) ? intval($dice['fudge'][1]) : 2;
 			}
@@ -212,13 +223,19 @@ class roll implements roll_interface
 				// loop through and roll for the quantity
 				for ($i = 0; $i < $dice['qty']; $i++)
 				{
-					$re_rolls = array();	// the rolls for the current die (only multiple rolls if exploding)
-					$roll_count = 0;		// count of rolls for this die roll (Only > 1 if exploding)
+					// the rolls for the current die (only multiple rolls if exploding)
+					$re_rolls = [];
+
+					// count of rolls for this die roll (Only > 1 if exploding)
+					$roll_count = 0;
 
 					/** @noinspection PhpUnusedLocalVariableInspection */
-					$roll_total = 0;		// the total rolled
+					// the total rolled
+					$roll_total = 0;
+
 					/** @noinspection PhpUnusedLocalVariableInspection */
-					$roll_index = 0;		// re-roll index
+					// re-roll index
+					$roll_index = 0;
 
 					do
 					{
@@ -280,14 +297,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$id = (int) $id;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB.
+		 */
 		if ($id < 0 || $id > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_FORUM_ID', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_FORUM_ID', 'ROLL_ULINT']);
 		}
 
 		// Add the identifier to the data array
@@ -312,14 +329,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$id = (int) $id;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB.
+		 */
 		if ($id < 0 || $id > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_TOPIC_ID', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_TOPIC_ID', 'ROLL_ULINT']);
 		}
 
 		// Add the identifier to the data array
@@ -344,14 +361,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$id = (int) $id;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB.
+		 */
 		if ($id < 0 || $id > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_POST_ID', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_POST_ID', 'ROLL_ULINT']);
 		}
 
 		// Add the identifier to the data array
@@ -379,17 +396,17 @@ class roll implements roll_interface
 		// User identifier is a required field
 		if (empty($id))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_USER_ID', 'FIELD_MISSING'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_USER_ID', 'FIELD_MISSING']);
 		}
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB.
+		 */
 		if ($id < 0 || $id > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_USER_ID', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_USER_ID', 'ROLL_ULINT']);
 		}
 
 		// Add the identifier to the data array
@@ -417,13 +434,13 @@ class roll implements roll_interface
 		// Notation is a required field
 		if ($notation === '')
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_NOTATION', 'FIELD_MISSING'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_NOTATION', 'FIELD_MISSING']);
 		}
 
 		// We limit the notation length to 255 characters
 		if (truncate_string($notation, 255) !== $notation)
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_NOTATION', 'TOO_LONG'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_NOTATION', 'TOO_LONG']);
 		}
 
 		// Add the notation to the data array
@@ -440,7 +457,7 @@ class roll implements roll_interface
 	 */
 	public function get_dices()
 	{
-		return isset($this->data['roll_dices']) ? (array) json_decode($this->data['roll_dices'], true) : array();
+		return isset($this->data['roll_dices']) ? (array) json_decode($this->data['roll_dices'], true) : [];
 	}
 
 	/**
@@ -450,10 +467,10 @@ class roll implements roll_interface
 	{
 		if (!$this->get_notation())
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_NOTATION', 'FIELD_MISSING'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_NOTATION', 'FIELD_MISSING']);
 		}
 
-		$dices = array();
+		$dices = [];
 		$percentage = $fudge = 0;
 		$quantity = $exploding = 0;
 		$penetrating = $compounding = 0;
@@ -465,12 +482,12 @@ class roll implements roll_interface
 
 		if (!$matches_found)
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value((array('ROLL_NOTATION', 'ROLL_NO_MATCHES')));
+			throw new \phpbbstudio\dice\exception\unexpected_value((['ROLL_NOTATION', 'ROLL_NO_MATCHES']));
 		}
 
 		foreach ($matches as $match)
 		{
-			$dice = array(
+			$dice = [
 				'operator'		=> $match[1] ? $match[1] : '+',
 				'qty'			=> $match[2] ? intval($match[2]) : 1,
 				'sides'			=> $match[3] ? ($this->utils->is_numeric($match[3]) ? intval($match[3]) : $match[3]) : 1,
@@ -479,30 +496,30 @@ class roll implements roll_interface
 				'penetrate'		=> ((bool) (($match[5] === '!p') || ($match[5] === '!!p'))),
 				'compound'		=> ((bool) (($match[5] === '!!') || ($match[5] === '!!p'))),
 				'compare_point'	=> false,
-				'additions'		=> array(),
-			);
+				'additions'		=> [],
+			];
 
 			// Check dice quantity limit
 			if ($this->config['dice_qty_per_dice'] && ($dice['qty'] > $this->config['dice_qty_per_dice']))
 			{
-				throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICE_QTY', 'TOO_HIGH'));
+				throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICE_QTY', 'TOO_HIGH']);
 			}
 
 			// Check dice sides limit, if limit is set and sides is not 100 or % (percentage dice)
-			if (!in_array($dice['sides'], array('F', 'F.1', 'F.2', '%', 100)))
+			if (!in_array($dice['sides'], ['F', 'F.1', 'F.2', '%', 100]))
 			{
 				if ($this->config['dice_sides_only'])
 				{
 					$allowed_sides = $this->functions->get_dice_sides();
 					if (!in_array($dice['sides'], $allowed_sides))
 					{
-						throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_SIDES', 'NOT_ALLOWED'));
+						throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_SIDES', 'NOT_ALLOWED']);
 					}
 				}
 
 				if ($this->config['dice_sides_per_dice'] && ($dice['sides'] > $this->config['dice_sides_per_dice']))
 				{
-					throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_SIDES', 'TOO_HIGH'));
+					throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_SIDES', 'TOO_HIGH']);
 				}
 			}
 
@@ -511,7 +528,7 @@ class roll implements roll_interface
 			$exploding = $dice['explode'] ? ++$exploding : $exploding;
 			$penetrating = $dice['penetrate'] ? ++$penetrating : $penetrating;
 			$compounding = $dice['compound'] ? ++$compounding : $compounding;
-			$percentage = in_array($dice['sides'], array('%', 100)) ? ++$percentage : $percentage;
+			$percentage = in_array($dice['sides'], ['%', 100]) ? ++$percentage : $percentage;
 
 			// Check if it's a fudge dice
 			if (gettype($dice['sides']) === 'string')
@@ -523,18 +540,18 @@ class roll implements roll_interface
 			// Check if we have a compare point
 			if ($match[6])
 			{
-				$dice['compare_point'] = array(
+				$dice['compare_point'] = [
 					'operator'	=> $match[6],
 					'value'		=> intval($match[7]),
-				);
+				];
 			}
 			else if ($dice['explode'])
 			{
 				// we are exploding the dice so we need a compare point, but none has been defined
-				$dice['compare_point'] = array(
+				$dice['compare_point'] = [
 					'operator'	=> '=',
 					'value'		=> $dice['fudge'] ? 1 : ($dice['sides'] === '%') ? 100 : $dice['sides'],
-				);
+				];
 			}
 
 			// Check if we have additions
@@ -546,12 +563,12 @@ class roll implements roll_interface
 				foreach ($additions as $addition)
 				{
 					// add the addition to the list
-					$dice['additions'][] = array(
+					$dice['additions'][] = [
 						// addition operator for concatenating with the dice (+, -, /, *)
 						'operator'	=> $addition[1],
 						// addition value - either numerical or string 'L' or 'H'
 						'value'		=> $this->utils->is_numeric($addition[2]) ? intval($addition[2]) : $addition[2],
-					);
+					];
 				}
 			}
 
@@ -562,43 +579,43 @@ class roll implements roll_interface
 		// Check dice limit
 		if ($this->config['dice_per_notation'] && (count($dices) > $this->config['dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICES', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICES', 'TOO_HIGH']);
 		}
 
 		// Check dice quantity limit
 		if ($this->config['dice_qty_dice_per_notation'] && ($quantity > $this->config['dice_qty_dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICES_QTY', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICES_QTY', 'TOO_HIGH']);
 		}
 
 		// Check percentage dice limit
 		if ($this->config['dice_pc_dice_per_notation'] && ($percentage > $this->config['dice_pc_dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICE_PERCENT', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICE_PERCENT', 'TOO_HIGH']);
 		}
 
 		// Check fudge dice limit
 		if ($this->config['dice_fudge_dice_per_notation'] && ($fudge > $this->config['dice_fudge_dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICE_FUDGE', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICE_FUDGE', 'TOO_HIGH']);
 		}
 
 		// Check exploding dice limit
 		if ($this->config['dice_exploding_dice_per_notation'] && ($exploding > $this->config['dice_exploding_dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICE_EXPLODE', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICE_EXPLODE', 'TOO_HIGH']);
 		}
 
 		// Check penetrating dice limit
 		if ($this->config['dice_penetration_dice_per_notation'] && ($penetrating > $this->config['dice_penetration_dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICE_PENETRATE', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICE_PENETRATE', 'TOO_HIGH']);
 		}
 
 		// Check compounding dice limit
 		if ($this->config['dice_compound_dice_per_notation'] && ($compounding > $this->config['dice_compound_dice_per_notation']))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_DICE_COMPOUND', 'TOO_HIGH'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_DICE_COMPOUND', 'TOO_HIGH']);
 		}
 
 		// JSON encode
@@ -615,13 +632,13 @@ class roll implements roll_interface
 	 */
 	public function get_rolls()
 	{
-		return isset($this->data['roll_rolls']) ? (array) json_decode($this->data['roll_rolls']) : array(0);
+		return isset($this->data['roll_rolls']) ? (array) json_decode($this->data['roll_rolls']) : [0];
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function set_rolls($rolls)
+	public function set_rolls(array $rolls)
 	{
 		// Enforce data type
 		$rolls = (array) $rolls;
@@ -640,24 +657,24 @@ class roll implements roll_interface
 	 */
 	public function get_display($skin, $dir, $ext = '')
 	{
-		$display = array();
+		$display = [];
 
 		// loop through and build the string for die rolled
 		foreach ($this->get_dices() as $index => $dice)
 		{
-			$rolls = isset($this->get_rolls()[$index]) ? $this->get_rolls()[$index] : array();
+			$rolls = isset($this->get_rolls()[$index]) ? $this->get_rolls()[$index] : [];
 			$has_compare_point = !empty($dice['compare_point']);
 
 			// Current roll total - used for totalling compounding rolls
 			$current_roll = 0;
-			$compounded_rolls = array();
+			$compounded_rolls = [];
 
-			$display_dice = array('OPERATOR' => $dice['operator']);
+			$display_dice = ['OPERATOR' => $dice['operator']];
 
 			// Output the rolls
 			foreach ($rolls as $roll_index => $roll)
 			{
-				$display_roll = array();
+				$display_roll = [];
 
 				// get the roll value to compare to (If penetrating and not the first roll, add 1, to compensate for the penetration)
 				$roll_val = ($dice['penetrate'] && $current_roll) ? $roll + 1 : $roll;
@@ -708,7 +725,7 @@ class roll implements roll_interface
 
 					// Reset current roll total
 					$current_roll = 0;
-					$compounded_rolls = array();
+					$compounded_rolls = [];
 				}
 				else
 				{
@@ -784,15 +801,14 @@ class roll implements roll_interface
 	 */
 	public function set_output()
 	{
-		// Enforce data type - store only output without its notation
-		$output = '';//$this->get_notation() . $this->lang->lang('COLON') . ' ';
+		$output = '';
 
 		if ($this->get_dices() && is_array($this->get_rolls()) && $this->get_rolls())
 		{
 			// loop through and build the string for die rolled
 			foreach ($this->get_dices() as $index => $dice)
 			{
-				$rolls = isset($this->get_rolls()[$index]) ? $this->get_rolls()[$index] : array();
+				$rolls = isset($this->get_rolls()[$index]) ? $this->get_rolls()[$index] : [];
 				$has_compare_point = !empty($dice['compare_point']);
 
 				// Current roll total - used for totalling compounding rolls
@@ -898,7 +914,7 @@ class roll implements roll_interface
 			// Loop through each roll and calculate the totals
 			foreach ($this->get_dices() as $index => $dice)
 			{
-				$rolls = isset($this->get_rolls()[$index]) ? $this->get_rolls()[$index] : array();
+				$rolls = isset($this->get_rolls()[$index]) ? $this->get_rolls()[$index] : [];
 
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				$dice_total = 0;
@@ -913,8 +929,10 @@ class roll implements roll_interface
 
 				if ($is_pool)
 				{
-					// Pool dice are success/failure so we don't want the actual dice roll
-					// we need to convert each roll to 1 (success) or 0 (failure)
+					/**
+					 * Pool dice are success/failure so we don't want the actual dice roll
+					 * we need to convert each roll to 1 (success) or 0 (failure)
+					 */
 					$rolls = array_map(function($value) use ($dice)
 					{
 						return $this->utils->get_success_state_value($value, $dice['compare_point']);
@@ -1010,14 +1028,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$successes = (int) $successes;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 65535 as a
-		* maximum because it matches the MySQL unsigned small int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 65535 as a
+		 * maximum because it matches the MySQL unsigned small int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB.
+		 */
 		if ($successes < 0 || $successes > 65535)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_SUCCESSES', 'ROLL_USINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_SUCCESSES', 'ROLL_USINT']);
 		}
 
 		// Add the successes to the data array
@@ -1071,7 +1089,7 @@ class roll implements roll_interface
 		*/
 		if ($time < 0 || $time > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_TIME', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_TIME', 'ROLL_ULINT']);
 		}
 
 		// Add the time to the data array
@@ -1096,14 +1114,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$id = (int) $id;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB.
+		 */
 		if ($id < 0 || $id > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_EDIT_USER', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_EDIT_USER', 'ROLL_ULINT']);
 		}
 
 		// Add the identifier to the data array
@@ -1128,14 +1146,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$time = (int) $time;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB. ULINT equals UNIX TIMESTAMP.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB. ULINT equals UNIX TIMESTAMP.
+		 */
 		if ($time < 0 || $time > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_EDIT_TIME', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_EDIT_TIME', 'ROLL_ULINT']);
 		}
 
 		// Add the time to the data array
@@ -1160,14 +1178,14 @@ class roll implements roll_interface
 		// Enforce data type
 		$count = (int) $count;
 
-		/*
-		* If the data is out of range we'll throw an exception. We use 4294967295 as a
-		* maximum because it matches the MySQL unsigned large int maximum value which
-		* is the lowest amongst the DBMS supported by phpBB. ULINT equals UNIX TIMESTAMP.
-		*/
+		/**
+		 * If the data is out of range we'll throw an exception. We use 4294967295 as a
+		 * maximum because it matches the MySQL unsigned large int maximum value which
+		 * is the lowest amongst the DBMS supported by phpBB. ULINT equals UNIX TIMESTAMP.
+		 */
 		if ($count < 0 || $count > 4294967295)
 		{
-			throw new \phpbbstudio\dice\exception\out_of_bounds(array('ROLL_EDIT_COUNT', 'ROLL_ULINT'));
+			throw new \phpbbstudio\dice\exception\out_of_bounds(['ROLL_EDIT_COUNT', 'ROLL_ULINT']);
 		}
 
 		// Add the count to the data array

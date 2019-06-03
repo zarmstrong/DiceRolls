@@ -20,14 +20,15 @@ services:
     phpbbstudio.dice.operator.roll:
         class: \phpbbstudio\dice\operator\roll
         arguments:
-            - '@config_text'
             - '@config'
+            - '@config_text'
             - '@service_container'
             - '@dbal.conn'
             - '@filesystem'
+            - '@phpbbstudio.dice.functions.common'
             - '@controller.helper'
             - '@template'
             - '@user'
-            - '%core.root_path%'
+            - '%tables.posts%'
             - '%phpbbstudio.dice.tables.rolls%'
-            - '@phpbbstudio.dice.functions.common'
+            - '%core.root_path%'

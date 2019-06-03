@@ -9,24 +9,24 @@
 namespace phpbbstudio\dice\migrations;
 
 /**
- * Install ACP module.
+ * phpBB Studio's Dice Migration: Install ACP module.
  */
 class install_ucp_module extends \phpbb\db\migration\migration
 {
 	/**
 	 * Check if the migration is effectively installed (entirely optional).
 	 *
-	 * @return bool 		True if this migration is installed, False if this migration is not installed
+	 * @return bool			True if this migration is installed, False if this migration is not installed
 	 * @access public
 	 */
 	public function effectively_installed()
 	{
 		$sql = 'SELECT module_id
-			FROM ' . $this->table_prefix . "modules
-			WHERE module_class = 'ucp'
-				AND module_langname = 'UCP_PIA_TITLE'";
+				FROM ' . $this->table_prefix . "modules
+				WHERE module_class = 'ucp'
+					AND module_langname = 'UCP_DICE_TITLE'";
 		$result = $this->db->sql_query($sql);
-		$module_id = $this->db->sql_fetchfield('module_id');
+		$module_id = (bool) $this->db->sql_fetchfield('module_id');
 		$this->db->sql_freeresult($result);
 
 		return $module_id !== false;
@@ -41,7 +41,7 @@ class install_ucp_module extends \phpbb\db\migration\migration
 	 */
 	static public function depends_on()
 	{
-		return array('\phpbb\db\migration\data\v32x\v325');
+		return ['\phpbb\db\migration\data\v32x\v325'];
 	}
 
 	/**
@@ -52,20 +52,20 @@ class install_ucp_module extends \phpbb\db\migration\migration
 	 */
 	public function update_data()
 	{
-		return array(
-			array('module.add', array(
+		return [
+			['module.add', [
 				'ucp',
 				0,
 				'UCP_DICE_TITLE',
-			)),
-			array('module.add', array(
+			]],
+			['module.add', [
 				'ucp',
 				'UCP_DICE_TITLE',
-				array(
+				[
 					'module_basename'	=> '\phpbbstudio\dice\ucp\main_module',
-					'modes'				=> array('settings'),
-				),
-			)),
-		);
+					'modes'				=> ['settings'],
+				],
+			]],
+		];
 	}
 }

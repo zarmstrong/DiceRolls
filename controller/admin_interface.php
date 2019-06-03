@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\controller;
 
 /**
- * Interface for the admin controller.
+ * phpBB Studio's Dice Admin controller interface.
  */
 interface admin_interface
 {

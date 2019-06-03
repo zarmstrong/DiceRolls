@@ -8,16 +8,48 @@
 
 namespace phpbbstudio\dice\event;
 
-/**
- * @ignore
- */
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * ACP listener.
+ * phpBB Studio's Dice ACP listener.
  */
 class acp_listener implements EventSubscriberInterface
 {
+	/** @var \phpbb\db\driver\driver_interface */
+	protected $db;
+
+	/** @var \phpbbstudio\dice\core\functions_common */
+	protected $functions;
+
+	/** @var \phpbb\request\request */
+	protected $request;
+
+	/** @var string Dice rolls table */
+	protected $rolls_table;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param  \phpbb\db\driver\driver_interface		$db				Database object
+	 * @param  \phpbbstudio\dice\core\functions_common	$functions		Dice common functions
+	 * @param  \phpbb\request\request					$request		Request object
+	 * @param  string									$rolls_table	Dice rolls table
+	 * @return void
+	 * @access public
+	 */
+	public function __construct(
+		\phpbb\db\driver\driver_interface $db,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\request\request $request,
+		$rolls_table
+	)
+	{
+		$this->db			= $db;
+		$this->functions	= $functions;
+		$this->request		= $request;
+		$this->table		= $rolls_table;
+	}
+
 	/**
 	 * Assign functions defined in this class to event listeners in the core.
 	 *
@@ -27,7 +59,7 @@ class acp_listener implements EventSubscriberInterface
 	 */
 	static public function getSubscribedEvents()
 	{
-		return array(
+		return [
 			'core.delete_user_after'							=> 'dice_delete_user_after',
 			'core.delete_post_after'							=> 'dice_delete_post_after',
 			'core.move_posts_after'								=> 'dice_move_posts_after',
@@ -40,37 +72,7 @@ class acp_listener implements EventSubscriberInterface
 			'core.acp_manage_forums_request_data'				=> 'dice_acp_manage_forums_request_data',
 			'core.acp_manage_forums_initialise_data'			=> 'dice_acp_manage_forums_initialise_data',
 			'core.acp_manage_forums_display_form'				=> 'dice_acp_manage_forums_display_form',
-		);
-	}
-
-	/** @var \phpbb\db\driver\driver_interface */
-	protected $db;
-
-	/** @var \phpbbstudio\dice\core\functions_common */
-	protected $functions;
-
-	/** @var \phpbb\request\request */
-	protected $request;
-
-	/** @var string Dice rolls table */
-	protected $table;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param  \phpbb\db\driver\driver_interface		$db			Database object
-	 * @param  \phpbbstudio\dice\core\functions_common	$functions	Dice common functions
-	 * @param  \phpbb\request\request					$request	Request object
-	 * @param  string									$table		Dice rolls table
-	 * @return void
-	 * @access public
-	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbbstudio\dice\core\functions_common $functions, \phpbb\request\request $request, $table)
-	{
-		$this->db			= $db;
-		$this->functions	= $functions;
-		$this->request		= $request;
-		$this->table		= $table;
+		];
 	}
 
 	/**
@@ -86,34 +88,32 @@ class acp_listener implements EventSubscriberInterface
 	{
 		$user_ids = $event['user_ids'];
 
-		if (count($user_ids))
+		if (!empty($user_ids))
 		{
 			if ($event['mode'] === 'remove' || $event['mode'] === 'retain')
 			{
 				/* Change user_id to anonymous for rolls by this user */
 				$sql = 'UPDATE ' . $this->table . '
-					SET user_id = ' . ANONYMOUS . '
-					WHERE ' . $this->db->sql_in_set('user_id', $user_ids);
+						SET user_id = ' . ANONYMOUS . '
+						WHERE ' . $this->db->sql_in_set('user_id', $user_ids);
 				$this->db->sql_query($sql);
 			}
 		}
-
 	}
 
 	/**
 	 * Performing actions directly after a post or topic has been deleted.
 	 * On hitting the X button of a post in view topic.
 	 *
-	 * @event core.delete_post_after
+	 * @event  core.delete_post_after
+	 * @param  \phpbb\event\data	$event		The event object
 	 * @return void
 	 * @access public
 	 */
 	public function dice_delete_post_after($event)
 	{
-		$sql = 'DELETE FROM ' . $this->table . '
-			WHERE post_id = ' . (int) $event['post_id'];
+		$sql = 'DELETE FROM ' . $this->table . ' WHERE post_id = ' . (int) $event['post_id'];
 		$this->db->sql_query($sql);
-
 	}
 
 	/**
@@ -126,24 +126,26 @@ class acp_listener implements EventSubscriberInterface
 	 */
 	public function dice_move_posts_after($event)
 	{
-		$topic_id = $event['topic_id'];
-		$post_ids = $event['post_ids'];
-		$forum_row = $event['forum_row'];
+		$forum_row	= $event['forum_row'];
+		$post_ids	= $event['post_ids'];
+		$topic_id	= $event['topic_id'];
 
 		$sql = 'UPDATE ' . $this->table . '
-			SET forum_id = ' . (int) $forum_row['forum_id'] . ", topic_id = " . (int) $topic_id . "
-			WHERE " . $this->db->sql_in_set('post_id', $post_ids);
+				SET forum_id = ' . (int) $forum_row['forum_id'] . ", 
+					topic_id = " . (int) $topic_id . "
+				WHERE " . $this->db->sql_in_set('post_id', $post_ids);
 		$this->db->sql_query($sql);
 	}
 
 	/**
 	 * Shared function which adds our rolls table to an array of tables.
 	 *
-	 * @event core.delete_topics_before_query					On delete a topic MCP/Quicktools
-	 * @event core.move_topics_before_query						On move a topic MCP/Quicktools moves the rolls too
-	 * @event core.delete_forum_content_before_query			On delete a forum in ACP
-	 * @event core.acp_manage_forums_move_content_sql_before	On move content of a forum in ACP
-	 * @event core.delete_posts_in_transaction_before			On delete posts in MCP
+	 * @event  core.delete_topics_before_query					On delete a topic MCP/Quicktools
+	 * @event  core.move_topics_before_query					On move a topic MCP/Quicktools moves the rolls too
+	 * @event  core.delete_forum_content_before_query			On delete a forum in ACP
+	 * @event  core.acp_manage_forums_move_content_sql_before	On move content of a forum in ACP
+	 * @event  core.delete_posts_in_transaction_before			On delete posts in MCP
+	 * @param  \phpbb\event\data		$event		The event object
 	 * @return void
 	 * @access public
 	 */
@@ -171,17 +173,17 @@ class acp_listener implements EventSubscriberInterface
 		$new_post_id	= $event['new_post_id'];
 
 		$sql = 'SELECT *
-			FROM ' . $this->table . '
-			WHERE topic_id = ' . (int) $topic_id . '
-				AND post_id = ' . (int) $post_id . '
-			ORDER BY roll_id ASC';
+				FROM ' . $this->table . '
+				WHERE topic_id = ' . (int) $topic_id . '
+					AND post_id = ' . (int) $post_id . '
+				ORDER BY roll_id ASC';
 		$result = $this->db->sql_query($sql);
 
-		$sql_ary = array();
+		$sql_ary = [];
 
 		while ($rolls = $this->db->sql_fetchrow($result))
 		{
-			$sql_ary[] = array(
+			$sql_ary[] = [
 				'roll_id'			=> (int) $rolls['roll_id'],
 				'roll_notation'		=> (string) $rolls['roll_notation'],
 				'roll_dices'		=> (string) $rolls['roll_dices'],
@@ -198,11 +200,11 @@ class acp_listener implements EventSubscriberInterface
 				'topic_id'			=> (int) $new_topic_id,
 				'post_id'			=> (int) $new_post_id,
 				'user_id'			=> (int) $rolls['user_id'],
-			);
+			];
 		}
 		$this->db->sql_freeresult($result);
 
-		if (count($sql_ary))
+		if (!empty($sql_ary))
 		{
 			$this->db->sql_multi_insert($this->table, $sql_ary);
 		}

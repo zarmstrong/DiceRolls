@@ -15,16 +15,16 @@ class main_info
 {
 	function module()
 	{
-		return array(
+		return [
 			'filename'	=> '\phpbbstudio\dice\ucp\main_module',
 			'title'		=> 'UCP_DICE_TITLE',
-			'modes'		=> array(
-				'settings'	=> array(
+			'modes'		=> [
+				'settings'	=> [
 					'title'	=> 'UCP_DICE',
 					'auth'	=> 'ext_phpbbstudio/dice && acl_u_dice_use_ucp',
-					'cat'	=> array('UCP_DICE_TITLE')
-				),
-			),
-		);
+					'cat'	=> ['UCP_DICE_TITLE'],
+				],
+			],
+		];
 	}
 }

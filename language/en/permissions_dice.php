@@ -13,14 +13,13 @@ if (!defined('IN_PHPBB'))
 
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+	$lang = [];
 }
 
 /**
 * Some characters you may want to copy&paste: ’ » “ ” …
 */
-
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
 	'ACL_F_DICE_ROLL'			=> '<strong>Dice</strong> - Can roll dice',
 	'ACL_F_DICE_EDIT'			=> '<strong>Dice</strong> - Can edit a rolled dice',
 	'ACL_F_DICE_DELETE'			=> '<strong>Dice</strong> - Can delete own dice',
@@ -36,4 +35,4 @@ $lang = array_merge($lang, array(
 	'ACL_U_DICE_USE_UCP'		=> '<strong>Dice</strong> - Can manage the Dice UCP',
 	'ACL_U_DICE_TEST'			=> '<strong>Dice</strong> - Can use the “Test notation” page',
 	'ACL_U_DICE_SKIN'			=> '<strong>Dice</strong> - Can ignore overriding forum skins<br><em>The user selected skin will be used, even when the forum skin is set to “override”.</em>',
-));
+]);

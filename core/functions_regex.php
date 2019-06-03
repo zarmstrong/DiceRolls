@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\core;
 
 /**
- * Regex functions.
+ * phpBB Studio's Dice Regex functions.
  */
 class functions_regex
 {
@@ -122,11 +122,11 @@ class functions_regex
 	{
 		if (empty($name))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_REGEX_NAME', 'FIELD_MISSING'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_REGEX_NAME', 'FIELD_MISSING']);
 		}
 		else if ((gettype($name) !== 'string') || !method_exists($this, $name))
 		{
-			throw new \phpbbstudio\dice\exception\unexpected_value(array('ROLL_REGEX_NAME', 'ROLL_NAME_NOT_FOUND'));
+			throw new \phpbbstudio\dice\exception\unexpected_value(['ROLL_REGEX_NAME', 'ROLL_NAME_NOT_FOUND']);
 		}
 
 		$pattern = $this->{$name}();

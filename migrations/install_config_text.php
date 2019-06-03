@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\migrations;
 
 /**
- * Install text configuration.
+ * phpBB Studio's Dice Migration: Install text configuration.
  */
 class install_config_text extends \phpbb\db\migration\migration
 {
@@ -22,7 +22,7 @@ class install_config_text extends \phpbb\db\migration\migration
 	 */
 	static public function depends_on()
 	{
-		return array('\phpbb\db\migration\data\v32x\v325');
+		return ['\phpbb\db\migration\data\v32x\v325'];
 	}
 
 	/**
@@ -33,23 +33,23 @@ class install_config_text extends \phpbb\db\migration\migration
 	 */
 	public function update_data()
 	{
-		return array(
-			array('config_text.add', array('dice_skins', json_encode(array('bajahs_red', 'classic_steel')))),
-			array('config_text.add', array('dice_sides', json_encode(array(4, 6, 8, 10, 12, 20)))),
-		);
+		return [
+			['config_text.add', ['dice_skins', json_encode(['bajahs_red', 'classic_steel'])]],
+			['config_text.add', ['dice_sides', json_encode([4, 6, 8, 10, 12, 20])]],
+		];
 	}
 
 	/**
 	 * Drop the dice extension text configurations from the database.
 	 *
-	 * @return array Array of table schema
+	 * @return array		Array of table schema
 	 * @access public
 	 */
 	public function revert_data()
 	{
-		return array(
-			array('config_text.remove', array('dice_skins')),
-			array('config_text.remove', array('dice_sides')),
-		);
+		return [
+			['config_text.remove', ['dice_skins']],
+			['config_text.remove', ['dice_sides']],
+		];
 	}
 }

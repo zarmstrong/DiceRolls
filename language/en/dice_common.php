@@ -13,14 +13,13 @@ if (!defined('IN_PHPBB'))
 
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+	$lang = [];
 }
 
 /**
 * Some characters you may want to copy&paste: ’ » “ ” …
 */
-
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
 	'DICE_DICE'		=> 'Dice',
 
 	'DICE_NOT_AJAX'					=> 'Dice rolls are managed with AJAX request. The current request is not AJAX and the server returned an invalid reply.',
@@ -43,10 +42,10 @@ $lang = array_merge($lang, array(
 	'DICE_ROLL_LIMIT_REACHED'		=> 'Dice limit reached',
 	'DICE_ROLL_NO_ROLL'				=> 'No dice were rolled.',
 
-	'DICE_ROLL_NOT_EXIST'			=> array(
+	'DICE_ROLL_NOT_EXIST'			=> [
 		1 => 'The provided roll does not exist.',
 		2 => 'The provided rolls do no exist.',
-	),
+	],
 	'DICE_ROLL_NOTATION'			=> 'Roll notation',
 	'DICE_ROLL_NOTATION_CURRENT'	=> 'Current roll notation',
 	'DICE_ROLL_NOTATION_NEW'		=> 'New roll notation',
@@ -206,5 +205,4 @@ $lang = array_merge($lang, array(
 	'DICE_ROLL_PAGE_EX_DETAILS_11_2'	=> 'Highest roll is 5, which is a success, so value of 1',
 	'DICE_ROLL_PAGE_EX_DETAILS_12'		=> '2d6<4+H: [3*,5]+H = 1',
 	'DICE_ROLL_PAGE_EX_DETAILS_12_2'	=> 'Highest roll is 5, which is a failure, so value of 0',
-
-));
+]);

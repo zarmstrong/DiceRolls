@@ -171,7 +171,7 @@
 	/**
 	 * Add a roll row to the table.
 	 *
-	 * @param	{array} 	roll			The roll data
+	 * @param	{array}		roll			The roll data
 	 * @param	{int}		roll.id			The roll identifier
 	 * @param	{string}	roll.notation	The roll notation
 	 * @param	{string}	roll.time		The roll time
@@ -252,12 +252,11 @@
 
 			/**
 			 * @var {RegExp}	pattern				Regular expression to find the dice bbcode in the text
-			 * @var {object}	textarea 			The textarea
+			 * @var {object}	textarea			The textarea
 			 */
 			let roll_id = response.ROLL_ID,
 				pattern = new RegExp('\\[roll=' + roll_id + '\\].*?\\[\\/roll\\]', 'gi'),
 				textarea = document.forms[form_name].elements[text_name];
-
 
 			textarea.value = textarea.value.replace(pattern, '');
 		}

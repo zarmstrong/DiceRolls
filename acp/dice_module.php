@@ -20,6 +20,7 @@ class dice_module
 	/**
 	 * @param $id
 	 * @param $mode
+	 * @throws \Exception
 	 */
 	public function main($id, $mode)
 	{

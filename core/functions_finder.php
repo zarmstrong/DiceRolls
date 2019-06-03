@@ -11,7 +11,7 @@ namespace phpbbstudio\dice\core;
 use \Symfony\Component\Finder\Finder;
 
 /**
- * Finder functions.
+ * phpBB Studio's Dice Finder functions.
  */
 class functions_finder
 {
@@ -24,7 +24,7 @@ class functions_finder
 	 */
 	public function find_dice_skins($directory)
 	{
-		$skins = array();
+		$skins = [];
 
 		$finder = new Finder;
 		$finder->ignoreUnreadableDirs()
@@ -51,9 +51,9 @@ class functions_finder
 	 * @return array					Array of available dice skin images
 	 * @access public
 	 */
-	public function find_dice_images($directory, $skin, $exts)
+	public function find_dice_images($directory, $skin, array $exts)
 	{
-		$images = array();
+		$images = [];
 
 		$finder = new Finder;
 		$finder->in($directory . $skin)

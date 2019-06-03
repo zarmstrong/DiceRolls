@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\exception;
 
 /**
- * UnexpectedValue exception
+ * phpBB Studio's Dice UnexpectedValue exception
  */
 class unexpected_value extends base
 {

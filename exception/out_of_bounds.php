@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\exception;
 
 /**
- * OutOfBounds exception
+ * phpBB Studio's Dice OutOfBounds exception
  */
 class out_of_bounds extends base
 {

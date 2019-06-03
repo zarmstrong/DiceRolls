@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\acp;
 
 /**
- *  phpBB Studio's Dice ACP module info.
+ * phpBB Studio's Dice ACP module info.
  */
 class dice_info
 {
@@ -19,12 +19,11 @@ class dice_info
 			'filename'	=> '\phpbbstudio\dice\acp\dice_module',
 			'title'		=> 'ACP_DICE_CAT',
 			'modes'		=> [
-				'dashboard'	=> array(
+				'dashboard'	=> [
 					'title'	=> 'ACP_DICE_DASH',
 					'auth'	=> 'ext_phpbbstudio/dice && acl_a_dice_admin',
-					'cat'	=> array('ACP_DICE_CAT')
-				),
-
+					'cat'	=> ['ACP_DICE_CAT'],
+				],
 			],
 		];
 	}

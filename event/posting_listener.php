@@ -11,27 +11,10 @@ namespace phpbbstudio\dice\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Posting listener.
+ * phpBB Studio's Dice Posting listener.
  */
 class posting_listener implements EventSubscriberInterface
 {
-	/**
-	 * Assign functions defined in this class to event listeners in the core.
-	 *
-	 * @static
-	 * @return array
-	 * @access public
-	 */
-	static public function getSubscribedEvents()
-	{
-		return array(
-			'core.posting_modify_post_data'				=> 'dice_posting_requests',
-			'core.posting_modify_submit_post_before'	=> 'dice_posting_submit',
-			'core.submit_post_end'						=> 'dice_posting_update',
-			'core.posting_modify_template_vars' 		=> 'dice_posting_variables',
-		);
-	}
-
 	/** @var \phpbbstudio\dice\core\functions_common */
 	protected $functions;
 
@@ -58,13 +41,36 @@ class posting_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbbstudio\dice\core\functions_common $functions, \phpbb\controller\helper $helper, \phpbbstudio\dice\operator\roll $operator, \phpbb\request\request $request, \phpbb\template\template $template)
+	public function __construct(
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\controller\helper $helper,
+		\phpbbstudio\dice\operator\roll $operator,
+		\phpbb\request\request $request,
+		\phpbb\template\template $template
+	)
 	{
 		$this->functions	= $functions;
 		$this->helper		= $helper;
 		$this->operator		= $operator;
 		$this->request		= $request;
 		$this->template		= $template;
+	}
+
+	/**
+	 * Assign functions defined in this class to event listeners in the core.
+	 *
+	 * @static
+	 * @return array
+	 * @access public
+	 */
+	static public function getSubscribedEvents()
+	{
+		return [
+			'core.posting_modify_post_data'				=> 'dice_posting_requests',
+			'core.posting_modify_submit_post_before'	=> 'dice_posting_submit',
+			'core.submit_post_end'						=> 'dice_posting_update',
+			'core.posting_modify_template_vars'			=> 'dice_posting_variables',
+		];
 	}
 
 	/**
@@ -77,9 +83,9 @@ class posting_listener implements EventSubscriberInterface
 	 */
 	public function dice_posting_requests($event)
 	{
-		$event['post_data'] = array_merge($event['post_data'], array(
+		$event['post_data'] = array_merge($event['post_data'], [
 			'dice_indicator'	=> $this->request->is_set_post('dice_indicator'),
-		));
+		]);
 	}
 
 	/**
@@ -92,9 +98,9 @@ class posting_listener implements EventSubscriberInterface
 	 */
 	public function dice_posting_submit($event)
 	{
-		$event['data'] = array_merge($event['data'], array(
+		$event['data'] = array_merge($event['data'], [
 			'dice_indicator'	=> $event['post_data']['dice_indicator'],
-		));
+		]);
 	}
 
 	/**
@@ -173,7 +179,7 @@ class posting_listener implements EventSubscriberInterface
 		 * @var string	U_DICE_DEL				Base URL to delete a dice roll, needed for the AJAX callback
 		 * @var string	U_DICE_EDIT				Base URL to edit a dice roll, needed for the AJAX callback
 		 */
-		$this->template->assign_vars(array(
+		$this->template->assign_vars([
 			'S_DICE_ENABLED'	=> (bool) $post_data['dice_enabled'],
 			'S_DICE_INDICATOR'	=> isset($post_data['dice_indicator']) ? (bool) $post_data['dice_indicator'] : false,
 			'S_DICE_LIMIT'		=> (bool) $this->functions->dice_limit_reached($count, $forum_id),
@@ -182,9 +188,16 @@ class posting_listener implements EventSubscriberInterface
 			'S_ROLL_DELETE'		=> (bool) $this->functions->dice_auth_delete($forum_id, $poster_id),
 			'S_ROLL_EDIT'		=> (bool) $this->functions->dice_auth_edit($forum_id, $poster_id),
 
-			'U_DICE_ADD'		=> $this->helper->route('phpbbstudio_dice_add', array('forum_id' => $forum_id, 'topic_id' => $topic_id, 'post_id' => $post_id, 'poster_id' => $poster_id, 'hash' => generate_link_hash('dice_add'))),
+			'U_DICE_ADD'		=> $this->helper->route('phpbbstudio_dice_add', [
+				'forum_id' => $forum_id,
+				'topic_id' => $topic_id,
+				'post_id' => $post_id,
+				'poster_id' => $poster_id,
+				'hash' => generate_link_hash('dice_add')
+			]),
+
 			'U_DICE_DELETE'		=> $this->helper->route('phpbbstudio_dice_del'),
 			'U_DICE_EDIT'		=> $this->helper->route('phpbbstudio_dice_edit'),
-		));
+		]);
 	}
 }

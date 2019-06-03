@@ -8,15 +8,12 @@
 
 namespace phpbbstudio\dice;
 
-/**
- * Ignore.
- */
 class ext extends \phpbb\extension\base
 {
 	/**
 	 * Check whether the extension can be enabled.
 	 * Provides meaningful(s) error message(s) and the back-link on failure.
-	 * CLI and 3.1/3.2 compatible (we do not use the $lang object here on purpose)
+	 * CLI compatible
 	 *
 	 * @return bool
 	 * @access public
@@ -42,6 +39,7 @@ class ext extends \phpbb\extension\base
 		}
 
 		$streams = stream_get_wrappers();
+
 		if (!in_array('glob', $streams))
 		{
 			$lang['EXTENSION_NOT_ENABLEABLE'] .= '<br>' . $user->lang('ERROR_GLOB_STREAM');
@@ -52,5 +50,4 @@ class ext extends \phpbb\extension\base
 
 		return $is_enableable;
 	}
-
 }

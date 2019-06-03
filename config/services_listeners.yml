@@ -1,6 +1,6 @@
 services:
     phpbbstudio.dice.listener.acp:
-        class: \phpbbstudio\dice\event\acp_listener
+        class: phpbbstudio\dice\event\acp_listener
         arguments:
             - '@dbal.conn'
             - '@phpbbstudio.dice.functions.common'
@@ -10,7 +10,7 @@ services:
             - { name: event.listener }
 
     phpbbstudio.dice.listener.bbcode:
-        class: \phpbbstudio\dice\event\bbcode_listener
+        class: phpbbstudio\dice\event\bbcode_listener
         arguments:
             - '@phpbbstudio.dice.functions.common'
             - '@request'
@@ -18,7 +18,7 @@ services:
             - { name: event.listener }
 
     phpbbstudio.dice.listener.display:
-        class: \phpbbstudio\dice\event\display_listener
+        class: phpbbstudio\dice\event\display_listener
         arguments:
             - '@auth'
             - '@config'
@@ -29,7 +29,7 @@ services:
             - { name: event.listener }
 
     phpbbstudio.dice.listener.posting:
-        class: \phpbbstudio\dice\event\posting_listener
+        class: phpbbstudio\dice\event\posting_listener
         arguments:
             - '@phpbbstudio.dice.functions.common'
             - '@controller.helper'
@@ -40,7 +40,7 @@ services:
             - { name: event.listener }
 
     phpbbstudio.dice.listener.setup:
-        class: \phpbbstudio\dice\event\setup_listener
+        class: phpbbstudio\dice\event\setup_listener
         arguments:
             - '@auth'
             - '@phpbbstudio.dice.functions.common'

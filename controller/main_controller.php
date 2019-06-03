@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\controller;
 
 /**
- * Main controller.
+ * phpBB Studio's Dice Main controller.
  */
 class main_controller implements main_interface
 {
@@ -59,7 +59,18 @@ class main_controller implements main_interface
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbbstudio\dice\core\functions_common $functions, \phpbb\controller\helper $helper, \phpbb\language\language $lang, \phpbbstudio\dice\operator\roll $operator, \phpbbstudio\dice\core\functions_regex $regex, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbb\config\config $config,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\controller\helper $helper,
+		\phpbb\language\language $lang,
+		\phpbbstudio\dice\operator\roll $operator,
+		\phpbbstudio\dice\core\functions_regex $regex,
+		\phpbb\request\request $request,
+		\phpbb\template\template $template,
+		\phpbb\user $user
+	)
 	{
 		$this->auth			= $auth;
 		$this->config		= $config;
@@ -89,19 +100,19 @@ class main_controller implements main_interface
 		// Check the link hash for security
 		if (!check_link_hash($this->request->variable('hash', ''), 'dice_add'))
 		{
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $this->lang->lang('FORM_INVALID'),
-			));
+			]);
 		}
 
 		// Check if dice is enabled on this forum
 		if (!$this->functions->forum_enabled($forum_id))
 		{
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $this->lang->lang('DICE_ROLL_FORUM_DISABLED'),
-			));
+			]);
 		}
 
 		// Grab the author for this post, if we are not creating a new post
@@ -109,10 +120,10 @@ class main_controller implements main_interface
 
 		if (!$this->functions->dice_auth_add($forum_id, (int) $poster_id))
 		{
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $this->lang->lang('DICE_ROLL_ADD_UNAUTH'),
-			));
+			]);
 		}
 
 		// Set up limit
@@ -125,10 +136,10 @@ class main_controller implements main_interface
 
 			if ($this->functions->dice_limit_reached($count, $forum_id))
 			{
-				$json_response->send(array(
+				$json_response->send([
 					'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 					'MESSAGE_TEXT'	=> $this->lang->lang('DICE_ROLLS_TOO_MANY'),
-				));
+				]);
 			}
 		}
 
@@ -144,17 +155,17 @@ class main_controller implements main_interface
 		$entity = $this->operator->get_entity();
 
 		// Map out entity functions and data
-		$map_fields = array(
+		$map_fields = [
 			'set_forum'		=> $forum_id,
 			'set_topic'		=> $topic_id,
 			'set_post'		=> $post_id,
 			'set_user'		=> $user_id,
 			'set_time'		=> time(),
 			'set_notation'	=> $notation,
-		);
+		];
 
 		// Garbage collection
-		$errors = array();
+		$errors = [];
 
 		// Call all functions with the respective data
 		foreach ($map_fields as $entity_function => $entity_data)
@@ -198,17 +209,16 @@ class main_controller implements main_interface
 			{
 				$errors[] = $e->get_message($this->lang);
 			}
-
 		}
 
 		// Send a json response
-		$json_response->send(array(
+		$json_response->send([
 			'ROLL_SUCCESS'	=> empty($errors),
 			'ROLL_LIMIT'	=> (bool) $this->functions->dice_limit_reached($count, $forum_id),
 			'ROLL_DATA'		=> $this->operator->get_roll_data_for_edit($entity),
 			'MESSAGE_TITLE'	=> empty($errors) ? $this->lang->lang('SUCCESS') : $this->lang->lang('ERROR'),
 			'MESSAGE_TEXT'	=> empty($errors) ? $this->lang->lang('DICE_ROLL_ADD_SUCCESS') : implode('<br>', $errors),
-		));
+		]);
 	}
 
 	/**
@@ -236,10 +246,10 @@ class main_controller implements main_interface
 		}
 		catch (\phpbbstudio\dice\exception\out_of_bounds $e)
 		{
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $e->get_message($this->lang),
-			));
+			]);
 		}
 
 		// Grab the author for this post, if we are not creating a new post
@@ -247,16 +257,16 @@ class main_controller implements main_interface
 
 		if (!$this->functions->dice_auth_edit($entity->get_forum(), (int) $poster_id))
 		{
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $this->lang->lang('DICE_ROLL_EDIT_UNAUTH'),
-			));
+			]);
 		}
 
 		if (confirm_box(true))
 		{
 			// Garbage collection
-			$errors = array();
+			$errors = [];
 
 			// Set up variables
 			$user_id = (int) $this->user->data['user_id'];
@@ -289,22 +299,22 @@ class main_controller implements main_interface
 			}
 
 			// Send a json response
-			$json_response->send(array(
+			$json_response->send([
 				'ROLL_SUCCESS'	=> empty($errors),
 				'ROLL_DATA'		=> $this->operator->get_roll_data_for_edit($entity),
 				'MESSAGE_TITLE'	=> empty($errors) ? $this->lang->lang('SUCCESS') : $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> empty($errors) ? $this->lang->lang('DICE_ROLL_EDIT_SUCCESS') : implode('<br>', $errors),
-			));
+			]);
 		}
 		else
 		{
-			$this->template->assign_vars(array(
+			$this->template->assign_vars([
 				'ROLL_DATA'		=> $this->operator->get_roll_data_for_edit($entity),
-			));
+			]);
 
-			confirm_box(false, 'DICE_ROLL_EDIT', build_hidden_fields(array(
-				'roll_id'	=> $roll_id
-			)), '@phpbbstudio_dice/dice_edit.html', $this->helper->get_current_url());
+			confirm_box(false, 'DICE_ROLL_EDIT', build_hidden_fields([
+				'roll_id'	=> $roll_id,
+			]), '@phpbbstudio_dice/dice_edit.html', $this->helper->get_current_url());
 		}
 	}
 
@@ -332,10 +342,10 @@ class main_controller implements main_interface
 
 		if (!$this->functions->dice_auth_delete($entity->get_forum(), (int) $poster_id))
 		{
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $this->lang->lang('DICE_ROLL_DELETE_UNAUTH'),
-			));
+			]);
 		}
 
 		if (confirm_box(true))
@@ -351,13 +361,13 @@ class main_controller implements main_interface
 				$count = count($entities);
 			}
 
-			$json_response->send(array(
+			$json_response->send([
 				'ROLL_ID'		=> (int) $roll_id,
 				'ROLL_SUCCESS'	=> (bool) $success,
 				'ROLL_LIMIT'	=> (bool) $this->functions->dice_limit_reached($count, $entity->get_forum()),
 				'MESSAGE_TITLE'	=> $success ? $this->lang->lang('SUCCESS') : $this->lang->lang('ERROR'),
 				'MESSAGE_TEXT'	=> $success ? $this->lang->lang('DICE_ROLL_DELETE_SUCCESS') : $this->lang->lang('DICE_ROLL_NOT_EXIST', 1),
-			));
+			]);
 		}
 		else
 		{
@@ -365,9 +375,9 @@ class main_controller implements main_interface
 			 * The 5th parameter (u_action) has to be set
 			 * for it to work correctly with AJAX and URL rewriting.
 			 */
-			confirm_box(false, 'DICE_ROLL_DELETE', build_hidden_fields(array(
-				'roll_id'	=> (int) $roll_id
-			)), 'confirm_body.html', $this->helper->get_current_url());
+			confirm_box(false, 'DICE_ROLL_DELETE', build_hidden_fields([
+				'roll_id'	=> (int) $roll_id,
+			]), 'confirm_body.html', $this->helper->get_current_url());
 		}
 	}
 
@@ -404,10 +414,10 @@ class main_controller implements main_interface
 		{
 			$json_response = new \phpbb\json_response;
 
-			$json_response->send(array(
+			$json_response->send([
 				'MESSAGE_TITLE'	=> 'HI',
 				'MESSAGE_TEXT'	=> $entity->get_output(),
-			));
+			]);
 		}
 
 		$skin = $this->request->variable('skin', $this->user->data['dice_u_skin'], true);
@@ -415,7 +425,7 @@ class main_controller implements main_interface
 		$skin_data = $this->functions->get_dice_skin_data(true, $skin);
 		$skin_options = $this->functions->build_dice_select($skins, $skin, true);
 
-		$this->template->assign_vars(array(
+		$this->template->assign_vars([
 			'NOTATION'			=> $entity->get_notation(),
 			'OUTPUT'			=> $entity->get_output(),
 			'DISPLAY'			=> $entity->get_display($skin_data['name'], $skin_data['dir'], $skin_data['ext']),
@@ -441,7 +451,7 @@ class main_controller implements main_interface
 			'S_DICE_SUBMIT'			=> $submit,
 
 			'U_DICE_ACTION'			=> $this->helper->route('phpbbstudio_dice'),
-		));
+		]);
 
 		return $this->helper->render('@phpbbstudio_dice/dice_page.html', $this->lang->lang('DICE_ROLL'));
 	}

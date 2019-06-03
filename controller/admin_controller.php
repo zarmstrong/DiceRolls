@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\controller;
 
 /**
- * Admin controller.
+ * phpBB Studio's Dice Admin controller.
  */
 class admin_controller implements admin_interface
 {
@@ -40,16 +40,22 @@ class admin_controller implements admin_interface
 	/** @var \phpbb\user_loader */
 	protected $user_loader;
 
-	/** @var string		Dice rolls table*/
+	/** @var string Forums table */
+	protected $forums_table;
+
+	/** @var string Dice rolls table*/
 	protected $rolls_table;
 
-	/** @var string		phpBB root path */
+	/** @var string Topics table */
+	protected $topics_table;
+
+	/** @var string phpBB root path */
 	protected $root_path;
 
-	/** @var string		phpEx */
+	/** @var string php File extension */
 	protected $php_ext;
 
-	/** @var string		Custom form action */
+	/** @var string Custom form action */
 	protected $u_action;
 
 	/**
@@ -64,13 +70,30 @@ class admin_controller implements admin_interface
 	 * @param  \phpbb\template\template					$template		Template object
 	 * @param  \phpbb\user								$user			User object
 	 * @param  \phpbb\user_loader						$user_loader	User loader object
+	 * @param  string									$forums_table	Forums table
 	 * @param  string									$rolls_table	Dice rolls table
+	 * @param  string									$topics_table	Topics table
 	 * @param  string									$root_path		phpBB root path
 	 * @param  string									$php_ext		phpEx
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, \phpbbstudio\dice\core\functions_common $functions, \phpbb\language\language $lang, \phpbb\log\log $log, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user, \phpbb\user_loader $user_loader, $rolls_table, $root_path, $php_ext)
+	public function __construct(
+		\phpbb\config\config $config,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\language\language $lang,
+		\phpbb\log\log $log,
+		\phpbb\request\request $request,
+		\phpbb\template\template $template,
+		\phpbb\user $user,
+		\phpbb\user_loader $user_loader,
+		$forums_table,
+		$rolls_table,
+		$topics_table,
+		$root_path,
+		$php_ext
+	)
 	{
 		$this->config		= $config;
 		$this->db			= $db;
@@ -81,7 +104,10 @@ class admin_controller implements admin_interface
 		$this->template		= $template;
 		$this->user			= $user;
 		$this->user_loader	= $user_loader;
+		$this->forums_table	= $forums_table;
 		$this->rolls_table	= $rolls_table;
+		$this->topics_table	= $topics_table;
+
 		$this->root_path	= $root_path;
 		$this->php_ext		= $php_ext;
 	}
@@ -96,10 +122,11 @@ class admin_controller implements admin_interface
 		$value = $this->request->variable('value', '');
 
 		// Add a form key to the settings
-		add_form_key('dice_settings');
+		$form_key = 'dice_settings';
+		add_form_key($form_key);
 
 		// Set up config settings
-		$options = array(
+		$options = [
 			'dice_sides_only',
 			'dice_max_rolls',
 			'dice_per_notation',
@@ -111,10 +138,10 @@ class admin_controller implements admin_interface
 			'dice_penetration_dice_per_notation',
 			'dice_compound_dice_per_notation',
 			'dice_exploding_dice_per_notation',
-		);
+		];
 
 		// Assign config settings
-		$template_vars = array();
+		$template_vars = [];
 		foreach ($options as $option)
 		{
 			$template_vars[utf8_strtoupper($option)] = $this->config[$option];
@@ -134,38 +161,43 @@ class admin_controller implements admin_interface
 					t.topic_id, t.topic_title,
 					f.forum_id, f.forum_name
 				FROM ' . $this->rolls_table . ' r
-				LEFT JOIN ' . TOPICS_TABLE . ' t
+				LEFT JOIN ' . $this->topics_table . ' t
 					ON t.topic_id = r.topic_id
-				LEFT JOIN ' . FORUMS_TABLE . ' f
+				LEFT JOIN ' . $this->forums_table . ' f
 					ON f.forum_id = t.forum_id
 				GROUP BY r.topic_id, t.topic_title, f.forum_id, f.forum_name
 				ORDER BY total DESC';
 		$result = $this->db->sql_query_limit($sql, 8);
+
 		while ($row = $this->db->sql_fetchrow($result))
 		{
-			$this->template->assign_block_vars('topics', array(
+			$this->template->assign_block_vars('topics', [
 				'FORUM_NAME'	=> $row['forum_name'],
 				'TOPIC_TITLE'	=> $row['topic_title'],
 				'TOTAL'			=> (int) $row['total'],
 
-				'U_FORUM'		=> append_sid($this->root_path . 'viewforum.' . $this->php_ext, array('f' => (int) $row['forum_id'])),
-				'U_TOPIC'		=> append_sid($this->root_path . 'viewtopic.' . $this->php_ext, array('f' => (int) $row['forum_id'], 't' => (int) $row['topic_id'])),
-			));
+				'U_FORUM'		=> append_sid($this->root_path . 'viewforum.' . $this->php_ext, ['f' => (int) $row['forum_id']]),
+				'U_TOPIC'		=> append_sid($this->root_path . 'viewtopic.' . $this->php_ext, ['f' => (int) $row['forum_id'], 't' => (int) $row['topic_id']]),
+			]);
 		}
+
 		$this->db->sql_freeresult($result);
 
 		// Select the top users with the most rolls
-		$users = array();
+		$users = [];
+
 		$sql = 'SELECT COUNT(roll_id) as total, user_id
 				FROM ' . $this->rolls_table . '
 				WHERE user_id > 0
 				GROUP BY user_id
 				ORDER BY total DESC';
 		$result = $this->db->sql_query_limit($sql, 8);
+
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$users[(int) $row['user_id']] = (int) $row['total'];
 		}
+
 		$this->db->sql_freeresult($result);
 
 		// Load the top users in the user_loader
@@ -174,11 +206,11 @@ class admin_controller implements admin_interface
 		// Assign the users data to the template
 		foreach ($users as $user_id => $total)
 		{
-			$this->template->assign_block_vars('users', array(
+			$this->template->assign_block_vars('users', [
 				'AVATAR'	=> (string) $this->user_loader->get_avatar($user_id),
 				'NAME'		=> (string) $this->user_loader->get_username($user_id, 'full'),
 				'TOTAL'		=> (int) $total,
-			));
+			]);
 		}
 
 		// Dice sides
@@ -186,10 +218,10 @@ class admin_controller implements admin_interface
 
 		foreach ($sides as $side)
 		{
-			$this->template->assign_block_vars('sides', array(
+			$this->template->assign_block_vars('sides', [
 				'NUMBER'	=> $side,
 				'U_DELETE'	=> $this->u_action . '&action=side_delete&value=' . $side,
-			));
+			]);
 		}
 
 		// Dice skins
@@ -209,16 +241,20 @@ class admin_controller implements admin_interface
 
 				$skins_all_valid = ($installed && !$valid) ? false : $skins_all_valid;
 
-				$this->template->assign_block_vars('skins', array(
+				$this->template->assign_block_vars('skins', [
 					'NAME'			=> (string) $skin,
 					'S_INSTALLED'	=> (bool) $installed,
 					'S_VALID'		=> (bool) $valid,
 					'U_ACTION'		=> $this->u_action . '&action=skin_' . ($installed ? 'uninstall' : 'install') . '&value=' . $skin,
-				));
+				]);
 			}
+			/**
+			 * Any skins installed but not found in the filesystem should be automatically removed.
+			 *
+			 * Skins that are in the installed list and not in the filesystem
+			 */
+			$skins_difference = array_diff($skins, $skins_available);
 
-			// Any skins installed but not found in the filesystem should be automatically removed.
-			$skins_difference = array_diff($skins, $skins_available); // Skins that are in the installed list and not in the filesystem
 			if (!empty($skins_difference))
 			{
 				$this->skins_update('skin_uninstall', $skins, $skins_difference);
@@ -226,12 +262,12 @@ class admin_controller implements admin_interface
 		}
 
 		// Garbage collection
-		$errors = array();
+		$errors = [];
 
 		// If the settings were submitted
 		if ($submit)
 		{
-			if (!check_form_key('dice_settings'))
+			if (!check_form_key($form_key))
 			{
 				$errors[] = $this->lang->lang('FORM_INVALID');
 			}
@@ -257,6 +293,7 @@ class admin_controller implements admin_interface
 			{
 				$errors[] = $this->lang->lang('ACP_DICE_SKINS_IMG_HEIGHT_ERROR');
 			}
+
 			if ($option_skins_width < 16 || $option_skins_width > 80)
 			{
 				$errors[] = $this->lang->lang('ACP_DICE_SKINS_IMG_WIDTH_ERROR');
@@ -269,20 +306,23 @@ class admin_controller implements admin_interface
 				{
 					$this->config->set('dice_skins_dir', $option_skins_dir);
 				}
+
 				if ($option_skins_height != $this->config['dice_skins_img_height'])
 				{
 					$this->config->set('dice_skins_img_height', $option_skins_height);
 				}
+
 				if ($option_skins_width != $this->config['dice_skins_img_width'])
 				{
 					$this->config->set('dice_skins_img_width', $option_skins_width);
 				}
+
 				if ($option_sides_only != $this->config['dice_sides_only'])
 				{
 					$this->config->set('dice_sides_only', $option_sides_only);
 				}
 
-				$option_numbers = array(
+				$option_numbers = [
 					'dice_max_rolls',
 					'dice_per_notation',
 					'dice_qty_per_dice',
@@ -293,7 +333,7 @@ class admin_controller implements admin_interface
 					'dice_penetration_dice_per_notation',
 					'dice_compound_dice_per_notation',
 					'dice_exploding_dice_per_notation',
-				);
+				];
 
 				foreach ($option_numbers as $n)
 				{
@@ -320,16 +360,16 @@ class admin_controller implements admin_interface
 			switch ($action)
 			{
 				case 'example':
-					$this->template->set_filenames(array('example' => '@phpbbstudio_dice/dice_example.html'));
+					$this->template->set_filenames(['example' => '@phpbbstudio_dice/dice_example.html']);
 					$this->template->assign_var('S_IS_AJAX', $this->request->is_ajax());
 
 					if ($this->request->is_ajax())
 					{
 						$json_response = new \phpbb\json_response;
-						$json_response->send(array(
+						$json_response->send([
 							'MESSAGE_TITLE' => $this->lang->lang('INFORMATION'),
 							'MESSAGE_TEXT'  => $this->template->assign_display('example'),
-						));
+						]);
 					}
 				break;
 
@@ -374,23 +414,23 @@ class admin_controller implements admin_interface
 						}
 
 						// Log it
-						$this->log->add('admin', $this->user->data['user_id'], $this->user->data['user_ip'], 'LOG_ACP_DICE_' . utf8_strtoupper($action), false, array($value));
+						$this->log->add('admin', $this->user->data['user_id'], $this->user->data['user_ip'], 'LOG_ACP_DICE_' . utf8_strtoupper($action), false, [$value]);
 
 						// Show success message
 						trigger_error($this->lang->lang('ACP_DICE_' . utf8_strtoupper($action) . '_SUCCESS', $value) . '<br>' . adm_back_link($this->u_action));
 					}
 					else
 					{
-						confirm_box(false, 'ACP_DICE_' . utf8_strtoupper($action), build_hidden_fields(array(
+						confirm_box(false, 'ACP_DICE_' . utf8_strtoupper($action), build_hidden_fields([
 							'action' => $action,
 							'value'  => $value,
-						)));
+						]));
 					}
 				break;
 			}
 		}
 
-		$this->template->assign_vars(array_merge($template_vars, array(
+		$this->template->assign_vars(array_merge($template_vars, [
 			'S_ERRORS'			=> !empty($errors),
 			'ERROR_MSG'			=> implode('<br>', $errors),
 
@@ -409,7 +449,7 @@ class admin_controller implements admin_interface
 			'U_LOCATIONS'		=> $this->u_action . '&action=locations',
 			'U_ORPHANED'		=> $this->u_action . '&action=orphaned',
 			'U_SIDE_ADD'		=> $this->u_action . '&action=side_add',
-		)));
+		]));
 	}
 
 	/**
@@ -443,7 +483,7 @@ class admin_controller implements admin_interface
 	 * @return void
 	 * @access protected
 	 */
-	protected function sides_update($action, $sides, $value)
+	protected function sides_update($action, array $sides, $value)
 	{
 		switch ($action)
 		{
@@ -475,10 +515,10 @@ class admin_controller implements admin_interface
 	 * @return void
 	 * @access protected
 	 */
-	protected function skins_update($action, $skins, $value)
+	protected function skins_update($action,array  $skins, $value)
 	{
 		// Force an array, if it is not already
-		$value = is_array($value) ? (array) $value : (array) array($value);
+		$value = is_array($value) ? (array) $value : (array) [$value];
 
 		switch ($action)
 		{
@@ -506,7 +546,7 @@ class admin_controller implements admin_interface
 	 */
 	protected function assign_link_locations()
 	{
-		$template_vars = array();
+		$template_vars = [];
 		$locations = $this->functions->get_dice_link_locations();
 
 		foreach ($locations as $location)
@@ -525,7 +565,7 @@ class admin_controller implements admin_interface
 	 */
 	protected function request_link_locations()
 	{
-		$links = array();
+		$links = [];
 		$locations = $this->functions->get_dice_link_locations();
 
 		foreach ($locations as $location)

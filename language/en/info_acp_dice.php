@@ -13,14 +13,13 @@ if (!defined('IN_PHPBB'))
 
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+	$lang = [];
 }
 
 /**
 * Some characters you may want to copy&paste: ’ » “ ” …
 */
-
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
 	// Cat
 	'ACL_CAT_PHPBB_STUDIO'	=> 'phpBB Studio',
 
@@ -51,4 +50,4 @@ $lang = array_merge($lang, array(
 	'LOG_ACP_DICE_SIDE_DELETE'			=> '<strong>Deleted dice side</strong><br />» %s',
 	'LOG_ACP_DICE_SKIN_INSTALL'			=> '<strong>Installed new dice skin</strong><br />» %s',
 	'LOG_ACP_DICE_SKIN_UNINSTALL'		=> '<strong>Uninstalled dice skin</strong><br />» %s',
-));
+]);

@@ -1,6 +1,6 @@
 {% INCLUDE 'ucp_header.html' %}
 
-<form id="ucp" method="post" action="{S_UCP_ACTION}">
+<form id="ucp_dice_body" name="ucp_dice_body" method="post" action="{S_UCP_ACTION}">
 
 <h2>{L_SETTINGS}</h2>
 
@@ -21,9 +21,9 @@
 
 	<fieldset>
 		<dl>
-			<dt>&nbsp;</dt>
+			<dt> </dt>
 			<dd>
-				<input type="submit" name="submit" id="submit" class="button1" value="{{ lang('SUBMIT') }}" tabindex="2" />&nbsp;
+				<input type="submit" name="submit" id="submit" class="button1" value="{{ lang('SUBMIT') }}" tabindex="2" />
 				<input type="reset" value="{{ lang('RESET') }}" name="reset" class="button2" /></dd>
 		</dl>
 		{{ S_HIDDEN_FIELDS }}

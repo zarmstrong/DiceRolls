@@ -50,14 +50,14 @@ interface roll_interface
 	 * @return roll_interface		$this		This object for chaining calls
 	 * @access public
 	 */
-	public function import($data);
+	public function import(array $data);
 
 	/**
 	 * Insert the roll data for the first time.
 	 *
 	 * Will give an error if the roll was already inserted, call save() instead.
 	 *
-	 * @return roll_interface		$this 		This object for chaining calls
+	 * @return roll_interface		$this		This object for chaining calls
 	 * @access public
 	 * @throws \phpbbstudio\dice\exception\out_of_bounds
 	 */
@@ -69,7 +69,7 @@ interface roll_interface
 	 * This must be called before closing or any changes will not be saved!
 	 * If adding a roll (saving for the first time), you must call insert() or an error will be given.
 	 *
-	 * @return roll_interface 		$this		This object for chaining calls
+	 * @return roll_interface		$this		This object for chaining calls
 	 * @access public
 	 * @throws \phpbbstudio\dice\exception\out_of_bounds
 	 */
@@ -219,7 +219,6 @@ interface roll_interface
 	 */
 	public function get_rolls();
 
-
 	/**
 	 * Set the rolls from the dice.
 	 *
@@ -227,7 +226,7 @@ interface roll_interface
 	 * @return roll_interface		$this		This object for chaining calls
 	 * @access public
 	 */
-	public function set_rolls($rolls);
+	public function set_rolls(array $rolls);
 
 	/**
 	 * Get the roll data for display.

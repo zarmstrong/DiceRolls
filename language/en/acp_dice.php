@@ -13,18 +13,17 @@ if (!defined('IN_PHPBB'))
 
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+	$lang = [];
 }
 
 /**
 * Some characters you may want to copy&paste: ’ » “ ” …
 */
-
-$lang = array_merge($lang, array(
-	'ACP_DICE_DICE'		=> array(
+$lang = array_merge($lang, [
+	'ACP_DICE_DICE'		=> [
 		1 => '%d dice',	// One dice
 		2 => '%d dice', // Two dice (don't we love the English language)
-	),
+	],
 
 	'ACP_DICE_ENJOY'				=> 'Enjoy',
 
@@ -127,4 +126,4 @@ $lang = array_merge($lang, array(
 	'ACP_DICE_PENETRATION_DICE_PER_NOTATION_DESC'	=> 'The following roll has 1 penetrating dice: 2d6<strong class="error">!p</strong> + 2d%',
 	'ACP_DICE_COMPOUND_DICE_PER_NOTATION'			=> 'Maximum compounding dice per roll',
 	'ACP_DICE_COMPOUND_DICE_PER_NOTATION_DESC'		=> 'The following roll has 1 compounding dice: 2d6<strong class="error">!!</strong> + 5d4',
-));
+]);

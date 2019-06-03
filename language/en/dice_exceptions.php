@@ -13,14 +13,13 @@ if (!defined('IN_PHPBB'))
 
 if (empty($lang) || !is_array($lang))
 {
-	$lang = array();
+	$lang = [];
 }
 
 /**
 * Some characters you may want to copy&paste: ’ » “ ” …
 */
-
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
 	'EXCEPTION_OUT_OF_BOUNDS'		=> 'The field `<strong>%1$s</strong>` received data beyond its bounds. Reason: %2$s',
 	'EXCEPTION_UNEXPECTED_VALUE'	=> 'The field `<strong>%1$s</strong>` received unexpected data. Reason: %2$s',
 
@@ -51,8 +50,11 @@ $lang = array_merge($lang, array(
 	'EXCEPTION_ROLL_NO_MATCHES'		=> 'No dice matches found for provided notation.',
 	'EXCEPTION_ROLL_NOT_EXIST'		=> 'The provided roll does not exist.',
 	'EXCEPTION_ROLL_NAME_NOT_FOUND'	=> 'The provided regex name could not be found.',
+
+	// TRANSLATORS pay attention here
 	'EXCEPTION_ROLL_ULINT'			=> 'The input is not in the rage of 0 to 4&#8239;294&#8239;967&#8239;295.', // Leave &#8239; in place (non-breaking thin space)
 	'EXCEPTION_ROLL_USINT'			=> 'The input is not in the rage of 0 to 65&#8239;535.', // Leave &#8239; in place (non-breaking thin space)
+
 	'EXCEPTION_TOO_LONG'			=> 'The input was longer than the maximum length.',
 	'EXCEPTION_TOO_HIGH'			=> 'The input was higher than the maximum value.',
-));
+]);

@@ -1,6 +1,6 @@
 services:
     phpbbstudio.dice.controller.admin:
-        class: \phpbbstudio\dice\controller\admin_controller
+        class: phpbbstudio\dice\controller\admin_controller
         arguments:
             - '@config'
             - '@dbal.conn'
@@ -11,12 +11,14 @@ services:
             - '@template'
             - '@user'
             - '@user_loader'
+            - '%tables.forums%'
             - '%phpbbstudio.dice.tables.rolls%'
+            - '%tables.topics%'
             - '%core.root_path%'
             - '%core.php_ext%'
 
     phpbbstudio.dice.controller.main:
-        class: \phpbbstudio\dice\controller\main_controller
+        class: phpbbstudio\dice\controller\main_controller
         arguments:
             - '@auth'
             - '@config'

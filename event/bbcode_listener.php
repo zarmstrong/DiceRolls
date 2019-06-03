@@ -11,25 +11,10 @@ namespace phpbbstudio\dice\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * BBCode listener.
+ * phpBB Studio's Dice BBCode listener.
  */
 class bbcode_listener implements EventSubscriberInterface
 {
-	/**
-	 * Assign functions defined in this class to event listeners in the core.
-	 *
-	 * @static
-	 * @return array
-	 * @access public
-	 */
-	static public function getSubscribedEvents()
-	{
-		return array(
-			'core.text_formatter_s9e_configure_after'	=> 'set_dice_bbcode',
-			'core.text_formatter_s9e_parse_before'		=> 'set_dice_availability',
-		);
-	}
-
 	/** @var \phpbbstudio\dice\core\functions_common */
 	protected $functions;
 
@@ -44,10 +29,28 @@ class bbcode_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbbstudio\dice\core\functions_common $functions, \phpbb\request\request $request)
+	public function __construct(
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\request\request $request
+	)
 	{
 		$this->functions	= $functions;
 		$this->request		= $request;
+	}
+
+	/**
+	 * Assign functions defined in this class to event listeners in the core.
+	 *
+	 * @static
+	 * @return array
+	 * @access public
+	 */
+	static public function getSubscribedEvents()
+	{
+		return [
+			'core.text_formatter_s9e_configure_after'	=> 'set_dice_bbcode',
+			'core.text_formatter_s9e_parse_before'		=> 'set_dice_availability',
+		];
 	}
 
 	/**
@@ -63,7 +66,7 @@ class bbcode_listener implements EventSubscriberInterface
 		/* Get the BBCode configurator */
 		$configurator = $event['configurator'];
 
-		$configurator->attributeFilters->set('#dicenotation', array($this, 'dice_notation'));
+		$configurator->attributeFilters->set('#dicenotation', [$this, 'dice_notation']);
 
 		/* Let's unset any existing BBCode that might already exist */
 		unset($configurator->BBCodes['roll']);
@@ -102,7 +105,7 @@ class bbcode_listener implements EventSubscriberInterface
 	 */
 	public function dice_notation($string)
 	{
-		$notation = str_replace(array('D', 'f', 'h', 'l', 'P'), array('d', 'F', 'H', 'L', 'p'), $string);
+		$notation = str_replace(['D', 'f', 'h', 'l', 'P'], ['d', 'F', 'H', 'L', 'p'], $string);
 		$notation = preg_replace('[^0-9dFHLp\+\-\*/!\.%=<>\(\)]', '', $notation);
 
 		return $notation;

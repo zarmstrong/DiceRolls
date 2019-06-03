@@ -19,8 +19,7 @@ if (empty($lang) || !is_array($lang))
 /**
 * Some characters you may want to copy&paste: ’ » “ ” …
 */
-
-$lang = array_merge($lang, array(
+$lang = array_merge($lang, [
 	'UCP_DICE_TITLE'		=> 'Dice',
 	'UCP_DICE'				=> 'Settings',
 
@@ -28,4 +27,4 @@ $lang = array_merge($lang, array(
 	'UCP_DICE_USER_EXPLAIN'	=> 'Default display skin for dice rolls.',
 
 	'UCP_DICE_SAVED'		=> 'Settings have been saved successfully!',
-));
+]);

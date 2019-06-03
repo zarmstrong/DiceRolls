@@ -3,7 +3,6 @@
 {% INCLUDECSS '@phpbbstudio_dice/css/dice_acp.css' %}
 {% INCLUDECSS '@phpbbstudio_dice/css/dice_locations.css' %}
 
-
 {% macro location(name, status) %}
 	<span class="dice-input"><input class="dice-check" id="{{ name }}" name="{{ name }}" value="1" type="checkbox"{% if status %} checked{% endif %}><label for="{{ name }}"><i class="fa fa-fw" aria-hidden="true"></i><span class="dice-check-yes">{{ lang('YES') }}</span><span class="dice-check-no">{{ lang('NO') }}</span></label></span>
 {% endmacro %}

@@ -17,6 +17,11 @@ class main_module
 	var $page_title;
 	var $u_action;
 
+	/**
+	 * @param $id
+	 * @param $mode
+	 * @throws \Exception
+	 */
 	function main($id, $mode)
 	{
 		/** @var \phpbb\request\request $request */
@@ -27,22 +32,24 @@ class main_module
 
 		$this->tpl_name = 'ucp_dice_body';
 		$this->page_title = $user->lang('UCP_DICE_TITLE');
-		add_form_key('phpbbstudio/dice');
 
-		$data = array(
+		$form_key = 'ucp_dice_body';
+		add_form_key($form_key);
+
+		$data = [
 			'dice_u_skin' => $request->variable('dice_u_skin', $user->data['dice_u_skin']),
-		);
+		];
 
 		if ($request->is_set_post('submit'))
 		{
-			if (!check_form_key('phpbbstudio/dice'))
+			if (!check_form_key($form_key))
 			{
-				trigger_error($user->lang('FORM_INVALID'));
+				trigger_error($user->lang('FORM_INVALID'), E_USER_WARNING);
 			}
 
-			$sql = 'UPDATE ' . USERS_TABLE . '
-				SET ' . $db->sql_build_array('UPDATE', $data) . '
-				WHERE user_id = ' . (int) $user->data['user_id'];
+			$sql = 'UPDATE ' . $phpbb_container->getParameter('tables.users') . '
+					SET ' . $db->sql_build_array('UPDATE', $data) . '
+					WHERE user_id = ' . (int) $user->data['user_id'];
 			$db->sql_query($sql);
 
 			meta_refresh(3, $this->u_action);
@@ -52,9 +59,9 @@ class main_module
 
 		$skins = $functions->get_dice_skins(true);
 
-		$template->assign_vars(array(
-			'USER_SKIN'	=> $functions->build_dice_select($skins, $user->data['dice_u_skin'], true),
+		$template->assign_vars([
+			'USER_SKIN'		=> $functions->build_dice_select($skins, $user->data['dice_u_skin'], true),
 			'S_UCP_ACTION'	=> $this->u_action,
-		));
+		]);
 	}
 }

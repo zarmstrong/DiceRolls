@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\core;
 
 /**
- * Roll utility functions.
+ * phpBB Studio's Dice Roll utility functions.
  */
 class functions_utils
 {
@@ -61,8 +61,8 @@ class functions_utils
 	/**
 	 * Rolls a fudge dice, callback method.
 	 *
-	 * @param  array		$non_blanks
-	 * @return int						The outcome of the roll
+	 * @param  mixed		$non_blanks
+	 * @return int							The outcome of the roll
 	 * @access public
 	 */
 	public function fudge_dice($non_blanks)
@@ -104,7 +104,7 @@ class functions_utils
 	 * @return int								Success/failure state value
 	 * @access public
 	 */
-	public function get_success_state_value($value, $compare_point)
+	public function get_success_state_value($value, array $compare_point)
 	{
 		return $this->is_compare_point($compare_point, $value) ? 1 : 0;
 	}
@@ -117,7 +117,7 @@ class functions_utils
 	 * @return bool								Success/failure state
 	 * @access public
 	 */
-	public function is_compare_point($compare_point, $value)
+	public function is_compare_point(array $compare_point, $value)
 	{
 		return (bool) (!empty($compare_point) ? $this->compare_numbers($value, $compare_point['value'], $compare_point['operator']) : false);
 	}
@@ -185,12 +185,15 @@ class functions_utils
 			case '<':
 				$result = $a < $b;
 			break;
+
 			case '>':
 				$result = $a > $b;
 			break;
+
 			case '<=':
 				$result = $a <= $b;
 			break;
+
 			case '>=':
 				$result = $a >= $b;
 			break;

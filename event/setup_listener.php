@@ -11,26 +11,10 @@ namespace phpbbstudio\dice\event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Set up listener.
+ * phpBB Studio's Dice Set up listener.
  */
 class setup_listener implements EventSubscriberInterface
 {
-	/**
-	 * Assign functions defined in this class to event listeners in the core.
-	 *
-	 * @static
-	 * @return array
-	 * @access public
-	 */
-	static public function getSubscribedEvents()
-	{
-		return array(
-			'core.user_setup_after'		=> 'setup_lang',
-			'core.page_header'			=> 'setup_links',
-			'core.permissions'			=> 'setup_permissions',
-		);
-	}
-
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
@@ -53,12 +37,33 @@ class setup_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbbstudio\dice\core\functions_common $functions, \phpbb\language\language $lang, \phpbb\template\template $template)
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbbstudio\dice\core\functions_common $functions,
+		\phpbb\language\language $lang,
+		\phpbb\template\template $template
+	)
 	{
 		$this->auth			= $auth;
 		$this->functions	= $functions;
 		$this->lang			= $lang;
 		$this->template		= $template;
+	}
+
+	/**
+	 * Assign functions defined in this class to event listeners in the core.
+	 *
+	 * @static
+	 * @return array
+	 * @access public
+	 */
+	static public function getSubscribedEvents()
+	{
+		return [
+			'core.user_setup_after'		=> 'dice_setup_lang',
+			'core.page_header'			=> 'dice_setup_links',
+			'core.permissions'			=> 'dice_setup_permissions',
+		];
 	}
 
 	/**
@@ -68,7 +73,7 @@ class setup_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function setup_lang()
+	public function dice_setup_lang()
 	{
 		$this->lang->add_lang('dice_common', 'phpbbstudio/dice');
 	}
@@ -80,9 +85,9 @@ class setup_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function setup_links()
+	public function dice_setup_links()
 	{
-		$template_vars = array();
+		$template_vars = [];
 
 		// If the user has the permission to view the page
 		if ($this->auth->acl_get('u_dice_test'))
@@ -108,74 +113,39 @@ class setup_listener implements EventSubscriberInterface
 	 * @return void
 	 * @access public
 	 */
-	public function setup_permissions($event)
+	public function dice_setup_permissions($event)
 	{
-		/* Assigning them to local variables first */
-		$permissions = $event['permissions'];
 		$categories = $event['categories'];
+		$permissions = $event['permissions'];
 
-		/* Setting up a new permissions's CAT for us */
-		if (!isset($categories['phpbb_studio']))
+		if (empty($categories['phpbb_studio']))
 		{
-			$categories['phpbb_studio']= 'ACL_CAT_PHPBB_STUDIO';
+			/* Setting up a custom CAT */
+			$categories['phpbb_studio'] = 'ACL_CAT_PHPBB_STUDIO';
+
+			$event['categories'] = $categories;
 		}
 
-		$permissions += [
-			'f_dice_roll' => [
-				'lang'	=> 'ACL_F_DICE_ROLL',
-				'cat'	=> 'phpbb_studio',
-			],
-			'f_dice_edit' => [
-				'lang'	=> 'ACL_F_DICE_EDIT',
-				'cat'	=> 'phpbb_studio',
-			],
-
-			'f_dice_delete' => [
-				'lang'	=> 'ACL_F_DICE_DELETE',
-				'cat'	=> 'phpbb_studio',
-			],
-			'f_dice_view' => [
-				'lang'	=> 'ACL_F_DICE_VIEW',
-				'cat'	=> 'phpbb_studio',
-			],
-			'f_dice_no_limit' => [
-				'lang'	=> 'ACL_F_DICE_NO_LIMIT',
-				'cat'	=> 'phpbb_studio',
-			],
-			'f_mod_dice_add' => [
-				'lang'	=> 'ACL_F_MOD_DICE_ADD',
-				'cat'	=> 'phpbb_studio',
-			],
-			'f_mod_dice_edit' => [
-				'lang'	=> 'ACL_F_MOD_DICE_EDIT',
-				'cat'	=> 'phpbb_studio',
-			],
-			'f_mod_dice_delete' => [
-				'lang'	=> 'ACL_F_MOD_DICE_DELETE',
-				'cat'	=> 'phpbb_studio',
-			],
-			'a_dice_admin' => [
-				'lang'	=> 'ACL_A_DICE_ADMIN',
-				'cat'	=> 'phpbb_studio',
-			],
-			'u_dice_use_ucp' => [
-				'lang'	=> 'ACL_U_DICE_USE_UCP',
-				'cat'	=> 'phpbb_studio',
-			],
-			'u_dice_test' => [
-				'lang'	=> 'ACL_U_DICE_TEST',
-				'cat'	=> 'phpbb_studio',
-			],
-			'u_dice_skin' => [
-				'lang'	=> 'ACL_U_DICE_SKIN',
-				'cat'	=> 'phpbb_studio',
-			],
+		$perms = [
+			'f_dice_roll',
+			'f_dice_edit',
+			'f_dice_delete',
+			'f_dice_view',
+			'f_dice_no_limit',
+			'f_mod_dice_add',
+			'f_mod_dice_edit',
+			'f_mod_dice_delete',
+			'a_dice_admin',
+			'u_dice_use_ucp',
+			'u_dice_test',
+			'u_dice_skin',
 		];
 
-		/* Merging our CAT to the native array of perms */
-		$event['categories'] = array_merge($event['categories'], $categories);
+		foreach ($perms as $permission)
+		{
+			$permissions[$permission] = ['lang' => 'ACL_' . utf8_strtoupper($permission), 'cat' => 'phpbb_studio'];
+		}
 
-		/* Copying back to event variable */
 		$event['permissions'] = $permissions;
 	}
 }

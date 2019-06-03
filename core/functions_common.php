@@ -9,7 +9,7 @@
 namespace phpbbstudio\dice\core;
 
 /**
- * Common functions.
+ * phpBB Studio's Dice Common functions.
  */
 class functions_common
 {
@@ -40,10 +40,13 @@ class functions_common
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var string		phpBB root path */
+	/** @var string Forums table */
+	protected $forums_table;
+
+	/** @var string phpBB root path */
 	protected $root_path;
 
-	/** @var array		Array of allowed image extensions */
+	/** @var array Array of allowed image extensions */
 	protected $image_extensions;
 
 	/**
@@ -58,11 +61,24 @@ class functions_common
 	 * @param  \phpbb\language\language					$lang			Language object
 	 * @param  \phpbb\path_helper						$path_helper	Path helper
 	 * @param  \phpbb\user								$user			User object
+	 * @param  string									$forums_table	Forums table
 	 * @param  string									$root_path		phpBB root path
 	 * @return void
 	 * @access public
 	 */
-	public function __construct(\phpbb\auth\auth $auth, \phpbb\config\config $config, \phpbb\config\db_text $config_text, \phpbb\db\driver\driver_interface $db, \phpbb\filesystem\filesystem $filesystem, \phpbbstudio\dice\core\functions_finder $finder, \phpbb\language\language $lang, \phpbb\path_helper $path_helper, \phpbb\user $user, $root_path)
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbb\config\config $config,
+		\phpbb\config\db_text $config_text,
+		\phpbb\db\driver\driver_interface $db,
+		\phpbb\filesystem\filesystem $filesystem,
+		functions_finder $finder,
+		\phpbb\language\language $lang,
+		\phpbb\path_helper $path_helper,
+		\phpbb\user $user,
+		$forums_table,
+		$root_path
+	)
 	{
 		$this->auth			= $auth;
 		$this->config		= $config;
@@ -73,9 +89,10 @@ class functions_common
 		$this->lang			= $lang;
 		$this->path_helper	= $path_helper;
 		$this->user			= $user;
+		$this->forums_table	= $forums_table;
 		$this->root_path	= $root_path;
 
-		$this->image_extensions = array('gif', 'jpg', 'jpeg', 'png', 'bmp', 'svg');
+		$this->image_extensions = ['gif', 'jpg', 'jpeg', 'png', 'bmp', 'svg'];
 	}
 
 	/**
@@ -168,7 +185,7 @@ class functions_common
 			return false;
 		}
 
-		$sql = 'SELECT dice_enabled, dice_skin_override, dice_f_skin FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . (int) $forum_id;
+		$sql = 'SELECT dice_enabled, dice_skin_override, dice_f_skin FROM ' . $this->forums_table . ' WHERE forum_id = ' . (int) $forum_id;
 		$result = $this->db->sql_query_limit($sql, 1);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
@@ -190,7 +207,7 @@ class functions_common
 			return false;
 		}
 
-		$sql = 'SELECT dice_enabled FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . (int) $forum_id;
+		$sql = 'SELECT dice_enabled FROM ' . $this->forums_table . ' WHERE forum_id = ' . (int) $forum_id;
 		$result = $this->db->sql_query_limit($sql, 1);
 		$s_enabled = (bool) $this->db->sql_fetchfield('dice_enabled');
 		$this->db->sql_freeresult($result);
@@ -212,7 +229,7 @@ class functions_common
 			return false;
 		}
 
-		$sql = 'SELECT dice_skin_override FROM ' . FORUMS_TABLE . ' WHERE forum_id = ' . (int) $forum_id;
+		$sql = 'SELECT dice_skin_override FROM ' . $this->forums_table . ' WHERE forum_id = ' . (int) $forum_id;
 		$result = $this->db->sql_query_limit($sql, 1);
 		$s_override = (bool) $this->db->sql_fetchfield('dice_skin_override');
 		$this->db->sql_freeresult($result);
@@ -257,7 +274,7 @@ class functions_common
 	 * @return void
 	 * @access public
 	 */
-	public function set_dice_skins($skins)
+	public function set_dice_skins(array $skins)
 	{
 		// Enforce data type
 		$skins = (array) $skins;
@@ -283,7 +300,7 @@ class functions_common
 	 * @return void
 	 * @access public
 	 */
-	public function set_dice_sides($sides)
+	public function set_dice_sides(array $sides)
 	{
 		// Enforce data type
 		$sides = (array) $sides;
@@ -368,7 +385,7 @@ class functions_common
 	 * @return bool							Whether or not this dice skin has all images for all installed dice sides
 	 * @access public
 	 */
-	public function validate_dice_skin($skin, $sides)
+	public function validate_dice_skin($skin, array $sides)
 	{
 		$valid = true;
 
@@ -473,11 +490,11 @@ class functions_common
 		// Get the image extension for this dice skin
 		$ext = $skin !== 'text' ? $this->find_image_extension($skin) : '';
 
-		return (array) array(
+		return (array) [
 			'name'		=> $skin,
 			'dir'		=> $this->get_dice_skins_dir(),
 			'ext'		=> $ext,
-		);
+		];
 	}
 
 	/**
@@ -487,7 +504,7 @@ class functions_common
 	 * @return array						A cleaned array
 	 * @access public
 	 */
-	public function clean_dice_array($array)
+	public function clean_dice_array(array $array)
 	{
 		// No empty values
 		$array = array_filter($array);
@@ -509,16 +526,16 @@ class functions_common
 	 * @param  bool		$no_keys			Whether or not to use the array keys as <option value="">
 	 * @return string						An string of all options for a select field
 	 */
-	public function build_dice_select($array, $select, $no_keys)
+	public function build_dice_select(array $array, $select, $no_keys)
 	{
 		$options = '';
 
 		foreach ($array as $key => $option)
 		{
 			$value = $no_keys ? $option : $key;
-			$selected = $select == $value ? ' selected' : '';
+			$selected = $select == $value ? '" selected="selected' : '';
 
-			$options .= '<option value="' . $value . '"' . $selected . '>' . $option . '</option>';
+			$options .= '<option value="' . $value . $selected .'">' . $option . '</option>';
 		}
 
 		return (string) $options;
@@ -532,7 +549,7 @@ class functions_common
 	 */
 	protected function dice_link_locations()
 	{
-		return array(
+		return [
 			1	=> 'navbar_header_quick_links_before',
 			2	=> 'navbar_header_quick_links_after',
 			4	=> 'overall_header_navigation_prepend',
@@ -542,8 +559,8 @@ class functions_common
 			64	=> 'overall_footer_timezone_before',
 			128	=> 'overall_footer_timezone_after',
 			256	=> 'overall_footer_teamlink_before',
-			512	=> 'overall_footer_teamlink_after'
-		);
+			512	=> 'overall_footer_teamlink_after',
+		];
 	}
 
 	/**
@@ -554,16 +571,16 @@ class functions_common
 	 */
 	public function get_dice_link_locations()
 	{
-		$links = array();
+		$links = [];
 		$flags = $this->config['dice_link_locations'];
 		$locations = $this->dice_link_locations();
 
 		foreach($locations as $flag => $location)
 		{
-			$links[] = array(
+			$links[] = [
 				'name'		=> $location,
 				'status'	=> ($flags & $flag) ? true : false,
-			);
+			];
 		}
 
 		return $links;
@@ -576,7 +593,7 @@ class functions_common
 	 * @return void
 	 * @access public
 	 */
-	public function set_dice_link_locations($links)
+	public function set_dice_link_locations(array $links)
 	{
 		$flags = 0;
 		$locations = $this->dice_link_locations();
