@@ -4,13 +4,14 @@ phpbbstudio_dice:
         _controller: phpbbstudio.dice.controller.main:page
 
 phpbbstudio_dice_add:
-    path: /dice/add/f{forum_id}-t{topic_id}-p{post_id}-a{poster_id}
+    path: /dice/add/f{forum_id}/t{topic_id}/p{post_id}/a{poster_id}/{hash}
     defaults:
         _controller: phpbbstudio.dice.controller.main:add
     requirements:
         forum_id: \d+
         topic_id: \d+
         post_id: \d+
+        poster_id: \d+
 
 phpbbstudio_dice_edit:
     path: /dice/edit/{roll_id}

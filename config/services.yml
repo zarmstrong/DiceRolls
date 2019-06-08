@@ -6,7 +6,7 @@ imports:
 
 services:
     phpbbstudio.dice.entity.roll:
-            class: \phpbbstudio\dice\entity\roll
+            class: phpbbstudio\dice\entity\roll
             shared: false # Must be false to work
             arguments:
                 - '@config'
@@ -18,7 +18,7 @@ services:
                 - '%phpbbstudio.dice.tables.rolls%'
 
     phpbbstudio.dice.operator.roll:
-        class: \phpbbstudio\dice\operator\roll
+        class: phpbbstudio\dice\operator\roll
         arguments:
             - '@config'
             - '@config_text'

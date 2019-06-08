@@ -87,7 +87,7 @@ class main_controller implements main_interface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function add($forum_id, $topic_id, $post_id, $poster_id)
+	public function add($forum_id, $topic_id, $post_id, $poster_id, $hash)
 	{
 		if (!$this->request->is_ajax())
 		{
@@ -98,7 +98,7 @@ class main_controller implements main_interface
 		$json_response = new \phpbb\json_response;
 
 		// Check the link hash for security
-		if (!check_link_hash($this->request->variable('hash', ''), 'dice_add'))
+		if (!check_link_hash($hash, 'dice_add'))
 		{
 			$json_response->send([
 				'MESSAGE_TITLE'	=> $this->lang->lang('ERROR'),

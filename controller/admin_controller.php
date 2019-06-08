@@ -157,16 +157,26 @@ class admin_controller implements admin_interface
 		$this->db->sql_freeresult($result);
 
 		// Select the top topics with the most rolls
-		$sql = 'SELECT COUNT(r.roll_id) as total,
-					t.topic_id, t.topic_title,
-					f.forum_id, f.forum_name
-				FROM ' . $this->rolls_table . ' r
-				LEFT JOIN ' . $this->topics_table . ' t
-					ON t.topic_id = r.topic_id
-				LEFT JOIN ' . $this->forums_table . ' f
-					ON f.forum_id = t.forum_id
-				GROUP BY r.topic_id, t.topic_title, f.forum_id, f.forum_name
-				ORDER BY total DESC';
+		$sql_array = [
+			'SELECT'	=> 'COUNT(r.roll_id) as total,
+							t.topic_id, t.topic_title,
+							f.forum_id, f.forum_name',
+			'FROM'		=> [$this->rolls_table => 'r'],
+			'LEFT_JOIN'	=> [
+				[
+					'FROM'	=> [$this->topics_table => 't'],
+					'ON'	=> 't.topic_id = r.topic_id',
+				],
+				[
+					'FROM'	=> [$this->forums_table => 'f'],
+					'ON'	=> 'f.forum_id = r.forum_id',
+				],
+			],
+			'GROUP_BY'	=> 'r.topic_id, t.topic_title, f.forum_id, f.forum_name',
+			'ORDER_BY'	=> 'total DESC',
+		];
+
+		$sql = $this->db->sql_build_query('SELECT', $sql_array);
 		$result = $this->db->sql_query_limit($sql, 8);
 
 		while ($row = $this->db->sql_fetchrow($result))

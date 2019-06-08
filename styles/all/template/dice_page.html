@@ -20,7 +20,7 @@
 
 	<form name="dice_tst" action="{{ U_DICE_ACTION }}" method="post">
 		<fieldset class="dice-fieldset panel bg3">
-			<select class="dice-skin" id="skin" name="skin" title="Dice skin">
+			<select class="dice-skin" id="skin" name="skin" title="{{ lang('DICE_SKIN') }}">
 				{{ SKIN_OPTIONS }}
 			</select>
 			<input class="dice-input" id="notation" name="notation" placeholder="{{ lang('DICE_ROLL_NOTATION') }}" value="{{ NOTATION }}" type="text">

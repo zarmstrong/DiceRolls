@@ -20,11 +20,12 @@ interface main_interface
 	 * @param  int		$topic_id				The topic identifier
 	 * @param  int		$post_id				The post identifier
 	 * @param  int		$poster_id				The poster identifier
+	 * @param  string	$hash					The generated link hash
 	 * @return \phpbb\json_response
 	 * @throws \phpbb\exception\http_exception
 	 * @access public
 	 */
-	public function add($forum_id, $topic_id, $post_id, $poster_id);
+	public function add($forum_id, $topic_id, $post_id, $poster_id, $hash);
 
 	/**
 	 * Edit a roll.

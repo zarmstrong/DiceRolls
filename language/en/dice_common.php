@@ -24,6 +24,8 @@ $lang = array_merge($lang, [
 
 	'DICE_NOT_AJAX'					=> 'Dice rolls are managed with AJAX request. The current request is not AJAX and the server returned an invalid reply.',
 
+	'DICE_SKIN'						=> 'Dice skin',
+
 	'DICE_ROLL'						=> 'Dice roll',
 	'DICE_ROLL_ACTIONS'				=> 'Actions',
 	'DICE_ROLL_ADD_UNAUTH'			=> 'You are not authorised to add a roll.',

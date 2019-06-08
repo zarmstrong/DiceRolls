@@ -47,7 +47,7 @@ class acp_listener implements EventSubscriberInterface
 		$this->db			= $db;
 		$this->functions	= $functions;
 		$this->request		= $request;
-		$this->table		= $rolls_table;
+		$this->rolls_table	= $rolls_table;
 	}
 
 	/**
@@ -93,7 +93,7 @@ class acp_listener implements EventSubscriberInterface
 			if ($event['mode'] === 'remove' || $event['mode'] === 'retain')
 			{
 				/* Change user_id to anonymous for rolls by this user */
-				$sql = 'UPDATE ' . $this->table . '
+				$sql = 'UPDATE ' . $this->rolls_table . '
 						SET user_id = ' . ANONYMOUS . '
 						WHERE ' . $this->db->sql_in_set('user_id', $user_ids);
 				$this->db->sql_query($sql);
@@ -112,7 +112,7 @@ class acp_listener implements EventSubscriberInterface
 	 */
 	public function dice_delete_post_after($event)
 	{
-		$sql = 'DELETE FROM ' . $this->table . ' WHERE post_id = ' . (int) $event['post_id'];
+		$sql = 'DELETE FROM ' . $this->rolls_table . ' WHERE post_id = ' . (int) $event['post_id'];
 		$this->db->sql_query($sql);
 	}
 
@@ -130,7 +130,7 @@ class acp_listener implements EventSubscriberInterface
 		$post_ids	= $event['post_ids'];
 		$topic_id	= $event['topic_id'];
 
-		$sql = 'UPDATE ' . $this->table . '
+		$sql = 'UPDATE ' . $this->rolls_table . '
 				SET forum_id = ' . (int) $forum_row['forum_id'] . ", 
 					topic_id = " . (int) $topic_id . "
 				WHERE " . $this->db->sql_in_set('post_id', $post_ids);
@@ -152,7 +152,7 @@ class acp_listener implements EventSubscriberInterface
 	public function dice_add_rolls_table($event)
 	{
 		$table_ary = $event['table_ary'];
-		$table_ary[] = $this->table;
+		$table_ary[] = $this->rolls_table;
 		$event['table_ary'] = $table_ary;
 	}
 
@@ -173,7 +173,7 @@ class acp_listener implements EventSubscriberInterface
 		$new_post_id	= $event['new_post_id'];
 
 		$sql = 'SELECT *
-				FROM ' . $this->table . '
+				FROM ' . $this->rolls_table . '
 				WHERE topic_id = ' . (int) $topic_id . '
 					AND post_id = ' . (int) $post_id . '
 				ORDER BY roll_id ASC';
@@ -206,7 +206,7 @@ class acp_listener implements EventSubscriberInterface
 
 		if (!empty($sql_ary))
 		{
-			$this->db->sql_multi_insert($this->table, $sql_ary);
+			$this->db->sql_multi_insert($this->rolls_table, $sql_ary);
 		}
 	}
 
