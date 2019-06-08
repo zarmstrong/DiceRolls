@@ -24,6 +24,8 @@ $lang = array_merge($lang, [
 
 	'DICE_NOT_AJAX'					=> 'Las tiradas de dados se gestionan con solicitud AJAX. La solicitud actual no es AJAX y el servidor devolvió una respuesta no válida.',
 
+	'DICE_SKIN'						=> 'Skin del dado',
+
 	'DICE_ROLL'						=> 'Tirada de dados',
 	'DICE_ROLL_ACTIONS'				=> 'Acciones',
 	'DICE_ROLL_ADD_UNAUTH'			=> 'No está autorizado para añadir una tirada.',
