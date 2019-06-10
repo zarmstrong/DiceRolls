@@ -96,6 +96,7 @@ $lang = array_merge($lang, [
 
 	'ACP_DICE_SKINS_DIR'				=> 'Directorio de imágenes de skins',
 	'ACP_DICE_SKINS_DIR_DESC'			=> 'Esta ruta se utilizará para buscar skins. Cambiar esto reseteará las skins instaladas.<br><small>Ruta desde su directorio raíz de phpBB, por ejemplo: <samp>images/skins</samp></small>',
+	'ACP_DICE_SKINS_PATH_ERROR'			=> 'El directorio "skins" que ha introducido no es válido.<br>El valor contiene los siguientes caracteres no admitidos: <br />%s',
 	'ACP_DICE_SKINS_IMG_HEIGHT'			=> 'Altura de la imagen de skin',
 	'ACP_DICE_SKINS_IMG_HEIGHT_DESC'	=> 'Altura de la imagen para las imágenes de skin de los dados. Debe tener entre 16 y 80 píxeles.',
 	'ACP_DICE_SKINS_IMG_HEIGHT_ERROR'	=> 'La altura de la imagen que ingresó no es válida. El valor debe estar entre 16 y 80 píxeles.',

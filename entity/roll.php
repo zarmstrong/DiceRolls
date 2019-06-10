@@ -144,7 +144,10 @@ class roll implements roll_interface
 		// Set the roll_id using the id created by the SQL insert
 		$this->data['roll_id'] = (int) $this->db->sql_nextid();
 
-		// And update the table, as we have a different primary key
+		/**
+		 * And update the table, as we have a different primary key
+		 * That's for forked topics where we can't use the autoincrement value.
+		 */
 		$sql = 'UPDATE ' . $this->table . ' SET roll_id = ' . (int) $this->data['roll_id'] . ' WHERE roll_num = ' . (int) $this->data['roll_id'];
 		$this->db->sql_query($sql);
 

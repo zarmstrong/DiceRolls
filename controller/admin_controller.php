@@ -283,14 +283,39 @@ class admin_controller implements admin_interface
 			}
 
 			// Request the options
-			$option_skins_dir = $this->request->variable('dice_skins_dir', (string) $this->config['dice_skins_dir'], true);
+			$option_sides_only = $this->request->variable('dice_sides_only', (bool) $this->config['dice_sides_only']);
 			$option_skins_height = (int) $this->request->variable('dice_skins_img_height', (int) $this->config['dice_skins_img_height']);
 			$option_skins_width = (int) $this->request->variable('dice_skins_img_width', (int) $this->config['dice_skins_img_width']);
 
-			$option_sides_only = $this->request->variable('dice_sides_only', (bool) $this->config['dice_sides_only']);
+			$option_skins_dir = $this->request->variable('dice_skins_dir', (string) $this->config['dice_skins_dir'], true);
 
-			// Make sure there is no trailing slash
-			$option_skins_dir = substr($option_skins_dir, -1) === '/' ? substr($option_skins_dir, 0, -1) : $option_skins_dir;
+			/**
+			 * Let's trim a bunch of characters from the beginning and end of a string
+			 *
+			 * https://www.php.net/manual/en/function.trim.php
+			 *
+			 * " " (ASCII 32 (0x20)), an ordinary space.
+			 *  "\t" (ASCII 9 (0x09)), a tab.
+			 * "\n" (ASCII 10 (0x0A)), a new line (line feed).
+			 * "\r" (ASCII 13 (0x0D)), a carriage return.
+			 * "\0" (ASCII 0 (0x00)), the NUL-byte.
+			 * "\x0B" (ASCII 11 (0x0B)), a vertical tab.
+			 *
+			 * Added "/"
+			 */
+			$option_skins_dir = trim($option_skins_dir, "/ \t\n\r\0\x0B");
+
+			/**
+			 * Let's harden all of this a bit more
+			 *
+			 * Especially Dots, Backslashes plus a bunch of other chars aren't allowed.
+			 */
+			if (preg_match_all('/[\\\:*<>|"]|\.{2,}|^\./', $option_skins_dir, $matches))
+			{
+				$character_list = implode('<br>', $matches[0]);
+
+				$errors[] = $this->lang->lang('ACP_DICE_SKINS_PATH_ERROR', $character_list);
+			}
 
 			// Check if directory exists
 			if (!$this->functions->check_dice_dir($this->functions->make_dice_dir($option_skins_dir)))

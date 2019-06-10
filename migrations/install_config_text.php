@@ -38,18 +38,4 @@ class install_config_text extends \phpbb\db\migration\migration
 			['config_text.add', ['dice_sides', json_encode([4, 6, 8, 10, 12, 20])]],
 		];
 	}
-
-	/**
-	 * Drop the dice extension text configurations from the database.
-	 *
-	 * @return array		Array of table schema
-	 * @access public
-	 */
-	public function revert_data()
-	{
-		return [
-			['config_text.remove', ['dice_skins']],
-			['config_text.remove', ['dice_sides']],
-		];
-	}
 }

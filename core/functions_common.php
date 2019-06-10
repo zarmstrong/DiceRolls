@@ -104,7 +104,7 @@ class functions_common
 	 */
 	public function dice_limit($forum_id)
 	{
-		return (bool) ($this->config['dice_max_rolls'] && !$this->auth->acl_get('f_dice_no_limit', (int) $forum_id));
+		return ($this->config['dice_max_rolls'] && !$this->auth->acl_get('f_dice_no_limit', (int) $forum_id));
 	}
 
 	/**
@@ -117,7 +117,7 @@ class functions_common
 	 */
 	public function dice_limit_reached($count, $forum_id)
 	{
-		return (bool) (($count >= $this->config['dice_max_rolls']) && $this->dice_limit($forum_id));
+		return (($count >= $this->config['dice_max_rolls']) && $this->dice_limit($forum_id));
 	}
 
 	/**
@@ -129,7 +129,7 @@ class functions_common
 	 */
 	public function dice_author($user_id)
 	{
-		return (bool) ((int) $this->user->data['user_id'] === (int) $user_id);
+		return ($this->user->data['user_id'] === $user_id);
 	}
 
 	/**
@@ -142,7 +142,7 @@ class functions_common
 	 */
 	public function dice_auth_add($forum_id, $user_id)
 	{
-		return (bool) ($this->auth->acl_get('f_mod_dice_add', (int) $forum_id) || ($this->auth->acl_get('f_dice_roll', (int) $forum_id) && $this->dice_author($user_id)));
+		return ($this->auth->acl_get('f_mod_dice_add', (int) $forum_id) || ($this->auth->acl_get('f_dice_roll', (int) $forum_id) && $this->dice_author($user_id)));
 	}
 
 	/**
@@ -155,7 +155,7 @@ class functions_common
 	 */
 	public function dice_auth_delete($forum_id, $user_id)
 	{
-		return (bool) ($this->auth->acl_get('f_mod_dice_delete', (int) $forum_id) || ($this->auth->acl_get('f_dice_delete', (int) $forum_id) && $this->dice_author($user_id)));
+		return ($this->auth->acl_get('f_mod_dice_delete', (int) $forum_id) || ($this->auth->acl_get('f_dice_delete', (int) $forum_id) && $this->dice_author($user_id)));
 	}
 
 	/**
@@ -168,7 +168,7 @@ class functions_common
 	 */
 	public function dice_auth_edit($forum_id, $user_id)
 	{
-		return (bool) ($this->auth->acl_get('f_mod_dice_edit', (int) $forum_id) || ($this->auth->acl_get('f_dice_edit', (int) $forum_id) && $this->dice_author($user_id)));
+		return ($this->auth->acl_get('f_mod_dice_edit', (int) $forum_id) || ($this->auth->acl_get('f_dice_edit', (int) $forum_id) && $this->dice_author($user_id)));
 	}
 
 	/**
@@ -351,7 +351,7 @@ class functions_common
 	 */
 	public function check_dice_dir($directory)
 	{
-		return (bool) ($this->filesystem->exists($directory) && $this->filesystem->is_readable($directory));
+		return ($this->filesystem->exists($directory) && $this->filesystem->is_readable($directory));
 	}
 
 	/**

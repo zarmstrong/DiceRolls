@@ -245,9 +245,9 @@ class acp_listener implements EventSubscriberInterface
 		{
 			$forum_data = $event['forum_data'];
 
-			$forum_data['dice_enabled']			= (bool) false;
-			$forum_data['dice_f_skin']			= (string) '';
-			$forum_data['dice_skin_override']	= (bool) false;
+			$forum_data['dice_enabled']			= false;
+			$forum_data['dice_f_skin']			= '';
+			$forum_data['dice_skin_override']	= false;
 
 			$event['forum_data'] = $forum_data;
 		}

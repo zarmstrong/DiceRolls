@@ -96,6 +96,7 @@ $lang = array_merge($lang, [
 
 	'ACP_DICE_SKINS_DIR'				=> 'Skin image directory',
 	'ACP_DICE_SKINS_DIR_DESC'			=> 'This path will be used to search skins. Changing this will reset the installed skins.<br><small>Path under your phpBB root directory, e.g. <samp>images/skins</samp>.</small>',
+	'ACP_DICE_SKINS_PATH_ERROR'			=> 'The skins directory you entered is invalid.<br>The value contains the following unsupported characters:<br />%s',
 	'ACP_DICE_SKINS_IMG_HEIGHT'			=> 'Skin image height',
 	'ACP_DICE_SKINS_IMG_HEIGHT_DESC'	=> 'Image height for the dice skin images. Has to be between 16 and 80 pixels.',
 	'ACP_DICE_SKINS_IMG_HEIGHT_ERROR'	=> 'The image height you entered is invalid. The value has to be between 16 and 80 pixels.',
