@@ -165,7 +165,7 @@ class display_listener implements EventSubscriberInterface
 
 			// Lets do the quotes!
 			$message = preg_replace_callback(
-				"/<blockquote.*(.+?)<\/blockquote>/s",
+				'/<blockquote[^>]*>(.+?)<\/blockquote>/s',
 				function ($match) use (&$rolls, $topic_data, $row) {
 					return $this->replace_rolls($match[0], $rolls, $topic_data['dice_skin'], $row, true);
 				},
@@ -258,7 +258,7 @@ class display_listener implements EventSubscriberInterface
 
 			// Lets do the quotes!
 			$message = preg_replace_callback(
-				"/<blockquote.*(.+?)<\/blockquote>/s",
+				'/<blockquote[^>]*>(.+?)<\/blockquote>/s',
 				function ($match) use (&$rolls, $skin_data, $row) {
 					return $this->replace_rolls($match[0], $rolls, $skin_data, $row, true);
 				},
@@ -382,7 +382,7 @@ class display_listener implements EventSubscriberInterface
 
 			// Lets do the quotes!
 			$message = preg_replace_callback(
-				"/<blockquote.*(.+?)<\/blockquote>/s",
+				'/<blockquote[^>]*>(.+?)<\/blockquote>/s',
 				function ($match) use (&$rolls, $skin_data, $row) {
 					return $this->replace_rolls($match[0], $rolls, $skin_data, $row, true);
 				},
@@ -486,7 +486,7 @@ class display_listener implements EventSubscriberInterface
 
 			// Lets do the quotes!
 			$message = preg_replace_callback(
-				"/<blockquote.*(.+?)<\/blockquote>/s",
+				'/<blockquote[^>]*>(.+?)<\/blockquote>/s',
 				function ($match) use (&$rolls, $skin_data, $post_info) {
 					return $this->replace_rolls($match[0], $rolls, $skin_data, $post_info, true);
 				},
