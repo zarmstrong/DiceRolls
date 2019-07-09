@@ -1,3 +1,8 @@
+v2.1.2
+- FIX Faulty regex returning null instead of the actual message.
+- FIX Rolls' TAB not showing up on regular user accounts upon installation.
+- Code housekeeping
+
 v2.1.1
 - Hardened user input about skins directory
 - Provided related meaningful error report
@@ -11,7 +16,7 @@ v2.1.0
 - Code housekeeping
 
 v2.0.1
-- Fix https://github.com/phpBB-Studio/DiceRolls/issues/1
+- FIX Quoted rolls aren't always rendered.
 - Adjust migration
 - Code housekeeping
 
