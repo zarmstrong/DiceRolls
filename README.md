@@ -1,2 +1,37 @@
-# DiceRolls
-Are you a :scroll: RPG enthousiast? A role playing master :prince:? Then we've got just the rolls for you! We have created a comprehensive dice roller extension that is flawlessly integrated into phpBB's native system. Your users can throw dice within your forums and let the story continue in new directions. All this while you as an Administrator are in control.  We have taken all precautions to make sure users can not manipulate their dice rolls into the desired outcome. A custom PHP class was created to make sure all calculations are done “behind the scenes”. And an additional way to gain more control over the individual rolls is done by mimicing the native attachment system.
+## Welcome to GitHub Pages
+
+You can use the [editor on GitHub](https://github.com/phpBB-Studio/DiceRolls/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+
+Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+
+### Markdown
+
+Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+
+```markdown
+Syntax highlighted code block
+
+# Header 1
+## Header 2
+### Header 3
+
+- Bulleted
+- List
+
+1. Numbered
+2. List
+
+**Bold** and _Italic_ and `Code` text
+
+[Link](url) and ![Image](src)
+```
+
+For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+
+### Jekyll Themes
+
+Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/phpBB-Studio/DiceRolls/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+
+### Support or Contact
+
+Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
