@@ -129,7 +129,7 @@ class functions_common
 	 */
 	public function dice_author($user_id)
 	{
-		return ($this->user->data['user_id'] === $user_id);
+		return ((int) $this->user->data['user_id'] === (int) $user_id);
 	}
 
 	/**
