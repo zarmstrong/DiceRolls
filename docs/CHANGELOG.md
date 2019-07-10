@@ -1,7 +1,12 @@
 v2.1.2
 - FIX Faulty regex returning null instead of the actual message.
 - FIX Rolls' TAB not showing up on regular user accounts upon installation.
-- FIX User should not have permission to delete or modify existing rolls as default.
+- ENHANCEMENT - User should not have permission to delete or modify existing rolls as default - Prevent cheats.
+- ENHANCEMENT - Posts containing rolls can be safely soft-deleted and restored.
+- ENHANCEMENT - Deleting rolls doesn't affect quoted ones.
+- ENHANCEMENT - Editing rolls doesn't affect quoted ones.
+- ENHANCEMENT - Deleting forum content doesn't affect rolls quoted elsewhere, ie.: other forums.
+- ENHANCEMENT - Deleting topics doesn't affect rolls quoted elsewhere, ie.: other topics.
 - Code housekeeping
 
 v2.1.1
