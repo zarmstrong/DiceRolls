@@ -61,12 +61,23 @@ class acp_listener implements EventSubscriberInterface
 	{
 		return [
 			'core.delete_user_after'							=> 'dice_delete_user_after',
-			'core.delete_post_after'							=> 'dice_delete_post_after',
+
+			// excluded in order to be able to soft delete posts and rolls and keep rolls quoted elsewhere
+			//'core.delete_post_after'							=> 'dice_delete_post_after',
+
 			'core.move_posts_after'								=> 'dice_move_posts_after',
-			'core.delete_topics_before_query'					=> 'dice_add_rolls_table',
+
+			// excluded in order to be able to keep rolls quoted elsewhere
+			//'core.delete_topics_before_query'					=> 'dice_add_rolls_table',
+
 			'core.move_topics_before_query'						=> 'dice_add_rolls_table',
-			'core.delete_forum_content_before_query'			=> 'dice_add_rolls_table',
-			'core.delete_posts_in_transaction_before'			=> 'dice_add_rolls_table',
+
+			// excluded in order to be able to keep rolls quoted elsewhere
+			//'core.delete_forum_content_before_query'			=> 'dice_add_rolls_table',
+
+			// excluded in order to be able to keep rolls quoted elsewhere
+			//'core.delete_posts_in_transaction_before'			=> 'dice_add_rolls_table',
+
 			'core.acp_manage_forums_move_content_sql_before'	=> 'dice_add_rolls_table',
 			'core.mcp_main_fork_sql_after'						=> 'dice_mcp_main_fork_sql_after',
 			'core.acp_manage_forums_request_data'				=> 'dice_acp_manage_forums_request_data',
