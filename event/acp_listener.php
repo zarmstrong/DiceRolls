@@ -67,15 +67,15 @@ class acp_listener implements EventSubscriberInterface
 
 			'core.move_posts_after'								=> 'dice_move_posts_after',
 
-			// excluded in order to be able to keep rolls quoted in other forums
+			// excluded in order to be able to keep rolls quoted elsewhere
 			//'core.delete_topics_before_query'					=> 'dice_add_rolls_table',
 
 			'core.move_topics_before_query'						=> 'dice_add_rolls_table',
 
-			// excluded in order to be able to keep rolls quoted in other forums
+			// excluded in order to be able to keep rolls quoted elsewhere
 			//'core.delete_forum_content_before_query'			=> 'dice_add_rolls_table',
 
-			// excluded in order to be able to keep rolls quoted in other forums
+			// excluded in order to be able to keep rolls quoted elsewhere
 			//'core.delete_posts_in_transaction_before'			=> 'dice_add_rolls_table',
 
 			'core.acp_manage_forums_move_content_sql_before'	=> 'dice_add_rolls_table',
