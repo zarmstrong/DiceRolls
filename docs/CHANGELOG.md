@@ -1,6 +1,7 @@
 v2.1.2
 - FIX Faulty regex returning null instead of the actual message.
 - FIX Rolls' TAB not showing up on regular user accounts upon installation.
+- FIX User should not have permission to delete or modify existing rolls as default.
 - Code housekeeping
 
 v2.1.1
