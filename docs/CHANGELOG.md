@@ -7,8 +7,8 @@ v2.1.2
 -
 - The followings to keep consistency with the core code:
 - ENHANCEMENT - Posts containing rolls can be safely soft-deleted and restored.
-- ENHANCEMENT - Deleting rolls doesn't affect quoted ones.
-- ENHANCEMENT - Editing rolls doesn't affect quoted ones.
+- ENHANCEMENT - Deleting posts doesn't affect quoted rolls.
+#############################################- ENHANCEMENT - Editing posts doesn't affect quoted rolls. is FALSE
 - ENHANCEMENT - Deleting forum content doesn't affect rolls quoted elsewhere, ie.: other forums.
 - ENHANCEMENT - Deleting topics doesn't affect rolls quoted elsewhere, ie.: other topics.
 -
