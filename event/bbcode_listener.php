@@ -66,7 +66,7 @@ class bbcode_listener implements EventSubscriberInterface
 		/* Get the BBCode configurator */
 		$configurator = $event['configurator'];
 
-		$configurator->attributeFilters->set('#dicenotation', [$this, 'dice_notation']);
+		$configurator->attributeFilters->set('#dicenotation', __CLASS__ . '::dice_notation');
 
 		/* Let's unset any existing BBCode that might already exist */
 		unset($configurator->BBCodes['roll']);
@@ -103,10 +103,11 @@ class bbcode_listener implements EventSubscriberInterface
 	 * @return string				$notation	The correctly formatted dice notation
 	 * @access public
 	 */
-	public function dice_notation($string)
+	public static function dice_notation($string)
 	{
 		$notation = str_replace(['D', 'f', 'h', 'l', 'P'], ['d', 'F', 'H', 'L', 'p'], $string);
-		$notation = preg_replace('[^0-9dFHLp\+\-\*/!\.%=<>\(\)]', '', $notation);
+		//$notation = preg_replace('[^0-9dFHLp\+\-\*/!\.%=<>\(\)]', '', $notation);
+		$notation = preg_replace('([^0-9dFHLp\+\-\*/!\.%=<>\(\)])', '', $notation);
 
 		return $notation;
 	}
